@@ -1,0 +1,142 @@
+body {
+    font-family: "Open Sans", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: lightgray;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+}
+
+.search-box input[type="text"] {
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
+.search-box button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #0077b6;
+    color: #fff;
+    cursor: pointer;
+}
+
+main {
+    display: flex;
+    margin: 20px;
+}
+
+.sidebar-left {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.sidebar-left h2 {
+    margin-bottom: 10px;
+}
+
+.status-container {
+    border-radius : 8px;
+    border : 2px solid black;
+    background-color: lightblue;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.sidebar-right {
+    flex: 1;
+    margin-left: 20px;
+}
+
+
+.post {
+    background-color: #eee;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.post h3 {
+    margin-top: 0;
+}
+
+.top-posts {
+    border-radius : 8px;
+    border : 2px solid black;
+    background-color: lightblue;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.login-form, .register-form {
+    border-radius : 8px;
+    border : 2px solid black;
+    background-color: lightblue;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.login-form h2, .register-form h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.login-form form, .register-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-form label, .register-form label {
+    margin-bottom: 5px;
+}
+
+.login-form input[type="text"], .login-form input[type="password"], .register-form input[type="text"], .register-form input[type="password"], .register-form input[type="email"], .register-form input[type="file"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.login-form .form-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.login-form .form-links a {
+    color: #0077b6;
+    text-decoration: none;
+}
+
+.login-form .form-links a:hover {
+    text-decoration: underline;
+}
+
+.login-form input[type="submit"], .register-form input[type="submit"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0077b6;
+    color: #fff;
+    cursor: pointer;
+}
+
+.register-form input[type="file"] {
+    padding: 5px 0;
+    margin-bottom: 0;
+}
+
