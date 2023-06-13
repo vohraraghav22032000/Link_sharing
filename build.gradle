@@ -7,6 +7,9 @@ buildscript {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.15.1"
+//        compile 'org.grails.plugins:mail:3.0.0'
+//        compile 'commons-fileupload:commons-fileupload:1.4'
+//        compile 'commons-io:commons-io:2.11.0'
     }
 }
 
@@ -58,6 +61,8 @@ dependencies {
     testCompile "org.grails:grails-web-testing-support"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
     testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+
+    implementation 'org.grails.plugins:mail:2.0.0'
 }
 
 bootRun {

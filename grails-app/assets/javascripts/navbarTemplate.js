@@ -15,30 +15,3 @@ exampleModal.addEventListener('show.bs.modal', function (event) {
     modalBodyInput.value = recipient
 })
 
-
-
-// function ajaxCall(){
-//     $.ajax(){
-//         {
-//             type: "GET",
-//                 url: WebApiURL + ".....URL...." + departCode,
-//             dataType: "json",
-//             crossDomain: true,
-//             async: true,
-//             cache: false,
-//             success: function (data) {
-//             var srno = 1;
-//             $('#tblPendingHrResponse').find($('.trTblPendingHrResponse')).remove();
-//
-//             $.each(data.data, function (index, value) {
-//                 random(value, srno);
-//                 srno++;
-//             });
-//         },
-//             error: function (x, e) {
-//                 alert('There seems to be some problem while fetching records!');
-//             }
-//
-//         }
-//     }
-// }

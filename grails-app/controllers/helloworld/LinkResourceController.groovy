@@ -4,20 +4,29 @@ class LinkResourceController {
 
     def linkResourceService
     def index() {
-
+        if(session.username==null){
+            redirect(url :"/index")
+            return
+        }
     }
 
     def saveLinkResource(){
+
         User user = User.findByUsername(session.username)
        // render params
-        boolean flag = linkResourceService.saveLinkUsingCredentials(params , user)
+
+        boolean flag = linkResourceService.saveLinkUsingCredentials(params , user )
 
         if(flag){
-            render("Your Link resource is saved successfully")
-//            redirect(url :"/dashboard")
+            //render("Your Topic is saved successfully")
+            flash.successMessage = "Link resources are saved successfully"
+            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
         }
         else{
-            render("Some Error has been occurred")
+            flash.successMessage = "Description cannot be greater than 128 characters"
+            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
         }
     }
 }
+
+

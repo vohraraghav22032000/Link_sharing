@@ -1,0 +1,15 @@
+1. Create a directory
+2. Switch to this directory
+3. Create a normal text file
+4. Create a hidden text file
+5. Modify the access of the hidden text file so that it can be edited only by root user.
+6. Move the hidden file to a your desktop.
+7. Create a directory, add 3 files into it and then remove the whole directory.
+8. Create a new user group.
+9. Create a new user and assign a new user home and the previously created usergroup to the user.
+10. Create a symbolic link in a different location for the file created in step 3.
+11. Open google chrome or any other web browser, see its memory usage using top command and end the process using the ps and grep commands.
+12. Use ssh and scp commands to download and modify files on an external machine.
+
+
+

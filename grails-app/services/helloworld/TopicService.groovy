@@ -4,9 +4,20 @@ import Enum.Seriousness
 import Enum.Visibility
 import grails.converters.JSON
 
+import grails.gorm.transactions.Transactional
+
+import org.springframework.mail.MailSender
+import org.springframework.mail.SimpleMailMessage
+import java.security.SecureRandom
+
 class TopicService {
 
+    MailSender mailSender
+
     def saveTopicUsingCredentials(def params , User currUser) {
+        if(params.topicName.length()>=128){
+            return false
+        }
         Topic topic = new Topic();
         topic.name = params.topicName;
         //topic.visibility = Visibility.PUBLIC
@@ -45,24 +56,65 @@ class TopicService {
     }
 
     def getTopRecentPosts() {
-        def cri = Topic.createCriteria()
-
-        def results = cri.list() {
-            maxResults(3)
-//            offset(0)
-//            sort: "id", order: "desc"
+        def topPost = Resource.createCriteria().list(){
+            topic{
+                eq("visibility" , Visibility.PUBLIC)
+            }
+            order("lastUpdated","desc")
+            maxResults 5
         }
-        return results
+        println "%%%%%%%%%%%%%%%%%%%%%5" + topPost
+        return topPost
     }
 
     def getAllPosts() {
         def cri = Topic.createCriteria()
 
-        def results = cri.list(){
-
-        }
+        def results = cri.list(){}
         Map m = ["key": results]
         return m as JSON
     }
 
+    def getTrendingPosts(User currUser){
+
+        def trendingList = Resource.createCriteria().list(){
+            projections {
+                groupProperty("topic")
+                rowCount("topicCount")
+            }
+            topic{
+                eq("visibility" , Visibility.PUBLIC)
+            }
+            order("topicCount", "desc")
+            maxResults(5)
+        }
+        println trendingList
+        return trendingList
+    }
+
+//    def topRatingPosts() {
+//
+//    }
+
+    def sendInvite(def params){
+        println "params in send invite" + params.linkTopic
+        println "params of mail in send invite" + params.userEmail
+        try{
+            String subject = "Invitation for the topic"
+            String  mailtext = "This is invite for the topic--->" + params.linkTopic
+            def msg = new SimpleMailMessage();
+            msg.setFrom("vohraraghav@outlook.com")
+            msg.setTo(params.userEmail)
+            msg.setSubject(subject)
+            msg.setText(mailtext)
+            mailSender.send(msg)
+
+            return true
+        }
+        catch(Exception e){
+            println e
+            return false
+        }
+
+    }
 }

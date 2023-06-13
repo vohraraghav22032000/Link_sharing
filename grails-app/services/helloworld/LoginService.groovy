@@ -9,13 +9,12 @@ class LoginService {
 
     }
 
-    def checkUserExistence(String userInput){
-        if(userInput.contains('@')){
-            User userOverEmail = User.findByEmail(userInput)
-            return userOverEmail
-        }
+    def checkUserExistence(String userEmail,String userUsername){
+        User userOverEmail = User.findByEmailOrUsername(userEmail , userUsername)
+        return userOverEmail
 
-        User userOverName = User.findByUsername(userInput)
-        return userOverName
+
+//        User userOverName = User.findByUsername(userInput)
+//        return userOverName
     }
 }

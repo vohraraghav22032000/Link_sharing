@@ -4,7 +4,6 @@ import Enum.Seriousness
 
 class Subscription {
 
-    def subscriptionService
 
     Topic topic
     User user

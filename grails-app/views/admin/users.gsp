@@ -7,60 +7,175 @@
     <title>Users Page</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'homePage.css')}">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+    <style>
+    #success-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: darkgrey;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+    }
+
+    .btn-close {
+        color: white;
+        opacity: 0.5;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+    #usersTable{
+        border: 2px solid black;
+        border-collapse: separate !important;
+        border-radius: 20px ;
+    }
+
+    </style>
 
 </head>
     <body>
-        <g:render template="/layouts/navbar" model="[subscriptionList : subscriptionList]"/>
-        <div class="container" style="margin-top: 50px">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Option 1</a></li>
-                            <li><a class="dropdown-item" href="#">Option 2</a></li>
-                            <li><a class="dropdown-item" href="#">Option 3</a></li>
-                        </ul>
-                        <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
-                    </div>
-                </div>
+    <%
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        response.setHeader ("Clear-Site-Data", "\"cache\"");
+        response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
+
+//            response.sendRedirect("/index?${System.currentTimeMillis()}");
+
+        if(session==null)
+            response.sendRedirect(url : "/index");
+    %>
+
+    <g:if test="${flash.successMessage}">
+
+        <div id="success-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+            <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <strong class="me-auto">${flash.successMessage}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table">
+        </div>
+        </div>
+
+    </g:if>
+
+    <g:render template="/layouts/topicPostNavbar" model="[subscriptionList : subscriptionList , isAdmin : isAdmin]"/>
+%{--        <div class="container" style="margin-top: 50px">--}%
+%{--            <div class="row">--}%
+                <div class="container " style="margin-top: 50px">
+                    <table class="table table-responsive table-striped dataTables_length" id="usersTable">
+%{--                        <table>--}%
                         <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Active</th>
-                            <th>Manage</th>
+                            <th><i class="bi bi-sort-up"></i>ID</th>
+                            <th><i class="bi bi-sort-up"></i>Username</th>
+                            <th><i class="bi bi-sort-up"></i>Email</th>
+                            <th><i class="bi bi-sort-up"></i>First Name</th>
+                            <th><i class="bi bi-sort-up"></i>Last Name</th>
+                            <th><i class="bi bi-sort-up"></i>Active</th>
+                            <th><i class="bi bi-sort-up"></i>Manage</th>
                         </tr>
                         </thead>
                         <tbody>
                             <g:each in="${allUsers}" var="item">
                                 <tr>
-                                    <td>item</td>
+                                    <td>${item.id}</td>
                                     <td>${item.username}</td>
                                     <td>${item.email}</td>
                                     <td>${item.firstname}</td>
                                     <td>${item.lastname}</td>
-                                    <td>Yes</td>
-                                    <td>
-                                        <button class="btn btn-primary">Activate</button>
-                                        <button class="btn btn-danger">Deactivate</button>
-                                    </td>
+                                    <g:if test="${item.active}">
+                                        <td>Yes</td>
+                                    </g:if>
+                                    <g:else>
+                                        <td>No</td>
+                                    </g:else>
+                                    <g:if test="${item.active}">
+                                        <td><button id="${item.id}" class="deactive btn btn-danger">Deactivate</button></td>
+                                    </g:if>
+                                    <g:else>
+                                        <td><button id="${item.id}" class="active btn btn-primary">Activate</button></td>
+                                    </g:else>
                                 </tr>
                             </g:each>
                         <!-- Add more rows here as needed -->
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+%{--            </div>--}%
+%{--        </div>--}%
+
+
+    <script src = "/home/raghavvohra/helloworld/grails-app/assets/javascripts/navbarTemplate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+    <!-- Load jQuery and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+
+            $(document).ready(function() {
+                $('#usersTable').DataTable({
+                    bJQueryUI: true,
+                    sPaginationType: "full_numbers",
+                    cache: false,
+                    height: 400,
+                    striped: true,
+                    pagination: true,
+                    pageSize: 5, //specify 5 here
+                    pageList: [5, 10, 25, 50, 100],
+                    showButtonIcons: true,
+                    // dom: "<'row gridheader'<'col-sm-12 col-md-12'B>>"
+                    //     + "<'row'<'col-sm-12'tr>>"
+                    //     + "<'row gridfooter'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+                });
+                $("body").on('click', '.deactive', function (e){
+                    var userId = this.id
+                    console.log("raghav")
+                    console.log(userId)
+                    $.ajax({
+                        url : "/register/deactivateUser?userId="+userId, success : function(response){
+                            // alert("Topic deleted successfully");
+                            window.location.reload();
+                        }
+                    });
+                });
+                $("body").on('click', '.active', function (e){
+                    var userId = this.id
+                    console.log("raghav")
+                    console.log(userId)
+                    $.ajax({
+                        url : "/register/activateUser?userId="+userId, success : function(response){
+                            // alert("Topic deleted successfully");
+                            window.location.reload();
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
+
+

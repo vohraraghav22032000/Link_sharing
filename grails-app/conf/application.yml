@@ -1,8 +1,9 @@
 ---
 grails:
-    controller:
+    controllers:
         upload:
-            maxFileSize : 10000000
+            maxFileSize: 26214400
+            maxRequestSize: 26214400
     profile: web
     codegen:
         defaultPackage: helloworld
@@ -11,6 +12,16 @@ grails:
             # Whether to translate GORM events into Reactor events
             # Disabled by default for performance reasons
             events: false
+    mail:
+        host: 'smtp.office365.com'
+        port: 587
+        username: 'vohraraghav@outlook.com'
+        password: 'Ragh@v@12560'
+        props:
+            mail:
+                smtp:
+                    starttls:
+                        enable: true
 info:
     app:
         name: '@info.app.name@'
@@ -86,6 +97,7 @@ endpoints:
         unique-names: true
 
 ---
+
 hibernate:
     cache:
         queries: false
@@ -95,14 +107,15 @@ dataSource:
     pooled: true
     jmxExport: true
     driverClassName: oracle.jdbc.OracleDriver
-    dialect: org.hibernate.dialect.Oracle10gDialect
-    username: linksharing
-    password: linksharing
+    dialect: org.hibernate.dialect.Oracle12cDialect
+    username: linksharing15
+    password: linksharing15
+
 
 environments:
     development:
         dataSource:
-            dbCreate: update
+            dbCreate: create-drop
             url: jdbc:oracle:thin:@localhost:1521/orcl
     test:
         dataSource:
@@ -139,3 +152,4 @@ spring:
 
 server:
     port: 9090
+
