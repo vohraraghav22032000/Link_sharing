@@ -20,6 +20,54 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
+
+    <style>
+    #success-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: darkgrey;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+    }
+
+    .btn-close {
+        color: white;
+        opacity: 0.5;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+    #error-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: red !important;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+
+    </style>
+
 </head>
     <body>
         <%
@@ -28,8 +76,6 @@
             response.setHeader("Expires", "0");
             response.setHeader ("Clear-Site-Data", "\"cache\"");
             response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-    //            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
             if(session==null)
                 response.sendRedirect(url : "/index");
@@ -45,6 +91,16 @@
             </div>
 
         </g:if>
+        <g:if test="${flash.errorMessage}">
+
+            <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+                <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                    <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+            </div>
+        </g:if>
 
         <g:if test="${session.username}">
             <g:render template="/layouts/topicPostNavbar" model="[subscriptionList : subscriptionList , isAdmin : isAdmin , user : user]"/>
@@ -52,13 +108,6 @@
         <g:else>
             <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
                 <g:link controller="Dashboard" action="index" class="navbar-brand" style="margin-left: 20px"><strong>Link Sharing</strong></g:link>
-%{--                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">--}%
-%{--                    <span class="navbar-toggler-icon"></span>--}%
-%{--                </button>--}%
-%{--                <form class="form-inline my-2 my-lg-0" style="display: flex;align-items: center;">--}%
-%{--                    <input class="form-control mr-sm-2" type="search" style="margin-left: 400px" placeholder="Search" aria-label="Search">--}%
-%{--                    <button class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 10px" type="submit">Search</button>--}%
-%{--                </form>--}%
             </nav>
         </g:else>
 
@@ -68,18 +117,20 @@
                     <div class="container">
                         <div class = "row">
                             <div class="col-3">
-                                <g:if test="${topic.createdBy.photo}">
-                                    <g:img dir="images" file="${topic.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="120px" width="120px"/>
+                                <g:if test="${resource.createdBy.photo}">
+                                    <g:img dir="images" file="${resource.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="120px" width="120px"/>
                                 </g:if>
                                 <g:else>
                                     <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px" height="120px" width="120px" alt="Example Image">
                                 </g:else>
                             </div>
                             <div class="col-5">
-                                <h2>${topic.createdBy.firstname} ${topic.createdBy.lastname}</h2>
-                                <g:link controller="Dashboard" action="allUsers" params="[userId : topic.createdBy.id]">
-                                    <h2>${topic.createdBy.username}</h2>
-                                </g:link>
+                                <h2>${resource.createdBy.firstname} ${resource.createdBy.lastname}</h2>
+                                <g:if test="${session.username}">
+                                    <g:link controller="Dashboard" action="allUsers" params="[userId : resource.createdBy.id]">
+                                        <h2>${resource.createdBy.username}</h2>
+                                    </g:link>
+                                </g:if>
                             </div>
                             <div class="col-4">
                                 <g:link params="[topicId: topic.id]" controller="topicShow" action="index">
@@ -91,13 +142,12 @@
 
                         <g:if test="${user}">
                             <div class="row">
-                                <div class="col-8">
+                                <div class="col-7">
                                     <h3>Rate this Post:</h3>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <div class="rating">
                                         <g:if test="${alreadyRatedScore}">
-%{--                                            <p>${alreadyRatedScore}</p>--}%
                                             <%
                                                 def i=1
                                             %>
@@ -118,6 +168,11 @@
                                             <i id="5" class="clickable bi bi-balloon-heart"></i>
                                         </g:else>
                                     </div>
+                                </div>
+                                <div class="col-2">
+                                    <g:if test="${numberOfUsersRatedResource.size() > 0}">
+                                        <p>${averageScore} (${numberOfUsersRatedResource.size()})</p>
+                                    </g:if>
                                 </div>
                             </div>
                         </g:if>
@@ -148,7 +203,6 @@
                             </div>
                             <div class="col-3">
                                 <g:if test="${(user && user.admin) || resource.createdBy.username == session.username}">
-%{--                                    <g:link id="editRes" controller="resourceRating" action="editResource" >Edit</g:link>--}%
                                     <g:if test="${resource.class as String == 'class helloworld.LinkResource'}">
                                         <g:link data-bs-toggle="modal" data-bs-target="#edit" data-bs-whatever="@mdo">
                                             Edit
@@ -260,9 +314,6 @@
                                                     </g:link>
                                                 </div>
                                             </div>
-                                            %{--                                        <div>--}%
-                                            %{--                                            <p>${topicMap.get(item[0]).subscribedCount}</p>--}%
-                                            %{--                                        </div>--}%
                                             <div class="row">
                                                 <div class="col-6">
                                                     <p>Subscriptions : ${topicMap.get(item[0]).subscribedCount}</p>
@@ -295,7 +346,6 @@
                             <g:each in ="${posts}" var = "item">
                                 <div class="row" style="height: 90px">
                                     <div class="col-3">
-                                    %{--                            <img src="${resource(dir: 'images', file: 'defaultImage.png')}" margin-left= "20px" margin-right="20px" height="70px" width="70px"alt="Example Image">--}%
                                         <g:if test="${item.createdBy.photo}">
                                             <g:img dir="images" file="${item.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" margin-left= "20px" margin-right="20px" height="70px" width="70px"/>
                                         </g:if>
@@ -323,9 +373,6 @@
                                             <div class="col-8">
                                                 <p>${item.description}</p>
                                             </div>
-%{--                                            <div class="col-4">--}%
-%{--                                                <g:link id = "topicName2" value="${item.topic.name}" params="[topicId: item.topic.id ,resourceId: item.id]" controller="postShow" action="index">View Post</g:link>--}%
-%{--                                            </div>--}%
                                         </div>
                                     </div>
                                 </div>

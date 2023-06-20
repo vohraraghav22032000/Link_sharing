@@ -20,7 +20,6 @@ class TopicService {
         }
         Topic topic = new Topic();
         topic.name = params.topicName;
-        //topic.visibility = Visibility.PUBLIC
         topic.createdBy = currUser
 
         if(params.visibility == 'public'){
@@ -29,19 +28,12 @@ class TopicService {
         else{
             topic.visibility = Visibility.PRIVATE
         }
-
-//        new Topic(name: params.topicName, createdBy: User.findByUsername('ankit_mishra'), visibility: Visibility.PUBLIC).save(flush: true, failOnError: true)
-//        new Topic(name: params.topicName, createdBy: User.findByUsername('farhan_ali'), visibility: Visibility.PRIVATE).save(flush: true, failOnError: true)
-
         if(topic.validate()){
             topic.save(flush : true , failOnError : true)
             subscribedToTopic(topic,currUser)
             return true
         }
         else{
-            if(topic.hasErrors()){
-                println topic.errors
-            }
             return false
         }
     }
@@ -63,20 +55,10 @@ class TopicService {
             order("lastUpdated","desc")
             maxResults 5
         }
-        println "%%%%%%%%%%%%%%%%%%%%%5" + topPost
         return topPost
     }
 
-    def getAllPosts() {
-        def cri = Topic.createCriteria()
-
-        def results = cri.list(){}
-        Map m = ["key": results]
-        return m as JSON
-    }
-
     def getTrendingPosts(User currUser){
-
         def trendingList = Resource.createCriteria().list(){
             projections {
                 groupProperty("topic")
@@ -88,17 +70,10 @@ class TopicService {
             order("topicCount", "desc")
             maxResults(5)
         }
-        println trendingList
         return trendingList
     }
 
-//    def topRatingPosts() {
-//
-//    }
-
     def sendInvite(def params){
-        println "params in send invite" + params.linkTopic
-        println "params of mail in send invite" + params.userEmail
         try{
             String subject = "Invitation for the topic"
             String  mailtext = "This is invite for the topic--->" + params.linkTopic
@@ -108,13 +83,11 @@ class TopicService {
             msg.setSubject(subject)
             msg.setText(mailtext)
             mailSender.send(msg)
-
             return true
         }
         catch(Exception e){
             println e
             return false
         }
-
     }
 }

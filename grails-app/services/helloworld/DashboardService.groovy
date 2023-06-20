@@ -2,10 +2,9 @@ package helloworld
 
 class DashboardService {
 
-    def createTopicMap(def allTopics){
-        def topicMap = [:] // Initialize an empty map
-
-        allTopics.each { topic ->
+    Map createTopicMap(List allTopics){
+        Map topicMap = [:]
+        allTopics.each { Topic topic ->
             def topicName = topic.name
             def topicCreatedBy = topic.createdBy
             def subscribedCount = topic.subscriptions.size()
@@ -15,7 +14,6 @@ class DashboardService {
                                topicName: topicName , topicCreatedBy : topicCreatedBy,
                                subscribedUser : subscribedUser]
         }
-
         return topicMap
     }
 }

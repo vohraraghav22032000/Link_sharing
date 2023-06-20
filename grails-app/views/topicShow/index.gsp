@@ -29,8 +29,6 @@
             response.setHeader ("Clear-Site-Data", "\"cache\"");
             response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
 
-    //            response.sendRedirect("/index?${System.currentTimeMillis()}");
-
             if(session==null)
                 response.sendRedirect(url : "/index");
         %>
@@ -41,13 +39,6 @@
         <g:else>
             <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
                 <g:link controller="Dashboard" action="index" class="navbar-brand" style="margin-left: 20px"><strong>Link Sharing</strong></g:link>
-%{--                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">--}%
-%{--                    <span class="navbar-toggler-icon"></span>--}%
-%{--                </button>--}%
-%{--                <form class="form-inline my-2 my-lg-0" style="display: flex;align-items: center;">--}%
-%{--                    <input class="form-control mr-sm-2" type="search" style="margin-left: 400px" placeholder="Search" aria-label="Search">--}%
-%{--                    <button class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 10px" type="submit">Search</button>--}%
-%{--                </form>--}%
             </nav>
         </g:else>
 
@@ -60,10 +51,10 @@
                         <div class="row">
                             <div class="col-4">
                                 <g:if test="${topic.createdBy.photo}">
-                                    <g:img dir="images" file="${topic.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="120px" width="90px"/>
+                                    <g:img dir="images" file="${topic.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="90px" width="90px"/>
                                  </g:if>
                                 <g:else>
-                                    <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px" height="120px" width="90px" alt="Example Image">
+                                    <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px" height="90px" width="90px" alt="Example Image">
                                 </g:else>
                             </div>
                             <div class="col-8">
@@ -81,9 +72,12 @@
                                     </g:if>
                                 </g:if>
 
-                                <g:link controller="Dashboard" action="allUsers" params="[userId : topic.createdBy.id]">
-                                    <h6>${topic.createdBy.username}</h6>
-                                </g:link>
+                                <g:if test="${session.username}">
+                                    <g:link controller="Dashboard" action="allUsers" params="[userId : topic.createdBy.id]">
+                                        <h6>${topic.createdBy.username}</h6>
+                                    </g:link>
+                                </g:if>
+
                                 <div class="row">
                                     <div class="col-5">
                                         <p>Subscriptions :${topicMap.get(topic).subscribedCount}</p>
@@ -101,8 +95,6 @@
                 </div>
                 <div class="status-container">
                     <h2>Users : ${topic.name}</h2>
-%{--                    <hr>--}%
-
                     <table class="table topicTable" width="100%">
                         <thead>
                         <tr>
@@ -119,20 +111,22 @@
                                         <div class="col-4">
                                             <g:if test="${item.photo}">
                                                 <g:link controller="Dashboard" action="allUsers" params="[userId : item.id]">
-                                                    <g:img dir="images" file="${item.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="120px" width="90px"/>
+                                                    <g:img dir="images" file="${item.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="90px" width="90px"/>
                                                 </g:link>
                                             </g:if>
                                             <g:else>
                                                 <g:link controller="Dashboard" action="allUsers" params="[userId : item.id]">
-                                                    <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px"  height="120px" width="90px" alt="Example Image">
+                                                    <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px"  height="90px" width="90px" alt="Example Image">
                                                 </g:link>
                                             </g:else>
                                         </div>
                                         <div class="col-8">
                                             <h4>${item.firstname} ${item.lastname}</h4>
-                                            <g:link controller="Dashboard" action="allUsers" params="[userId : item.id]">
-                                                <h4>${item.username}</h4>
-                                            </g:link>
+                                            <g:if test="${session.username}">
+                                                <g:link controller="Dashboard" action="allUsers" params="[userId : item.id]">
+                                                    <h4>${item.username}</h4>
+                                                </g:link>
+                                            </g:if>
                                             <div class="row">
                                                 <div class="col-6">
                                                     <p>Subscriptions : ${allSubUserMap.get(item).subscribedCountOfUser}</p>
@@ -154,8 +148,22 @@
             </div>
             <div class="sidebar-right">
                 <div class="status-container">
-                    <h2>Posts : ${topic.name}</h2>
-%{--                    <hr>--}%
+
+                    <div class="row" style="margin-top: 10px">
+                        <div class="col-7">
+                            <h3 style="margin-left: 25px">Posts : ${topic.name}</h3>
+                        </div>
+                        <div class="col-5">
+                            <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="topicShow" params="[topicId: topic.id]">
+                                <div class="input-group">
+                                    <g:field name="search" style="width: 80px" type="search" placeholder="Search" class="form-control" id="" maxlength="128" title="please enter valid text" required="true"/>
+                                    <div class="input-group-append">
+                                        <g:submitButton name="Search" style="margin-left: 5px ;margin-right:5px" class="btn btn-outline-success" type="submit">Search</g:submitButton>
+                                    </div>
+                                </div>
+                            </g:form>
+                        </div>
+                    </div>
                     <table class="table topicTable" width="100%">
                         <thead>
                         <tr>
@@ -171,10 +179,10 @@
                                     <div class="row">
                                         <div class="col-3">
                                             <g:if test="${item.createdBy.photo}">
-                                                <g:img dir="images" file="${item.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="120px" width="90px"/>
+                                                <g:img dir="images" file="${item.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="90px" width="90px"/>
                                             </g:if>
                                             <g:else>
-                                                <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px" height="120px" width="90px" alt="Example Image">
+                                                <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius: 10px" height="90px" width="90px" alt="Example Image">
                                             </g:else>
                                         </div>
                                         <div class="col-9">
@@ -206,15 +214,10 @@
                                                     <g:else>
                                                         <a href="${item.filePath}" target="_blank" download>
                                                             Download
-                                                            %{--                                Download Post--}%
                                                         </a>
                                                     </g:else>
                                                 </div>
-                                                %{--                                        <div class="col-3">--}%
-                                                %{--                                            <a id="${item.id}" class="markRead" >Mark Read</a>--}%
-                                                %{--                                        </div>--}%
                                                 <div class="col-5">
-                                                    %{--                        ${item.resourceId}--}%
                                                     <g:link value="${item.topic.name}" params="[topicId: item.topic.id , resourceId : item.id]" controller="postShow" action="index">
                                                         View Post
                                                     </g:link>

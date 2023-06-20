@@ -44,6 +44,20 @@
     .btn-close:hover {
         opacity: 1;
     }
+    #error-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: red !important;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
 
     </style>
 
@@ -56,8 +70,6 @@
             response.setHeader("Expires", "0");
             response.setHeader ("Clear-Site-Data", "\"cache\"");
             response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-//            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
             if(session==null)
                 response.sendRedirect(url : "/index");
@@ -74,6 +86,16 @@
             </div>
 
         </g:if>
+        <g:if test="${flash.errorMessage}">
+
+            <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+                <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                    <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+            </div>
+        </g:if>
 
         <g:render template="/layouts/navbar" model="[user : user ,subscriptionList : subscriptionList , isAdmin : isAdmin , topicCreatedByUserList : topicCreatedByUserList ]"/>
 
@@ -83,13 +105,12 @@
                         <g:render template="/layouts/profile" model="[user : user ,subscriptionList : subscriptionList , isAdmin : isAdmin , subscribedCount : subscribedCount , topicCreatedByUserList: topicCreatedByUserList , topicMap : topicMap]"/>
                     </div>
                     <div class="subscriptions">
-    %{--                    <h2>Your Subscriptions</h2>--}%
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-7">
                             <h3>Your Subscription</h3>
                         </div>
-                        <div class="col-md-3">
-                            <button id="mybtn1" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#allTopic" data-bs-whatever="@mdo"  style="margin-right: 5px; margin-left:5px" >View all</button>
+                        <div class="col-md-5">
+                            <button id="mybtn1" type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#allTopic" data-bs-whatever="@mdo"  style="margin-right: 5px; margin-left:5px" >View all Topics</button>
 
                             <div class="modal fade" id="allTopic" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -106,8 +127,7 @@
                             </div>
                         </div>
                     </div>
-%{--                    <hr>--}%
-                    <g:render template="/layouts/subscriptions" model="[subscriptionList : subscriptionList ,subscriptionListName: subscriptionListName ,  user : user , topicCreatedByUserName: topicCreatedByUserName , isAdmin: isAdmin , topicMap: topicMap]"/>
+                    <g:render template="/layouts/subscriptions" model="[subscriptionList : firstFiveSubscriptions ,subscriptionListName: subscriptionListName ,  user : user , topicCreatedByUserName: topicCreatedByUserName , isAdmin: isAdmin , topicMap: topicMap]"/>
                 </div>
 
                 <div>
@@ -142,9 +162,6 @@
                                                 </g:link>
                                             </div>
                                         </div>
-%{--                                        <div>--}%
-%{--                                            <p>${topicMap.get(item[0]).subscribedCount}</p>--}%
-%{--                                        </div>--}%
                                         <div class="row">
                                             <div class="col-6">
                                                 <p>Subscriptions : ${topicMap.get(item[0]).subscribedCount}</p>

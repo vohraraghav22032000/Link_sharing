@@ -5,11 +5,9 @@ import Enum.Seriousness
 class SubscriptionService {
     HashMap<String, Date> sortByDateAsValue(HashMap<String, Date> hm)
     {
-        // Create a list from elements of HashMap
         List<Map.Entry<String, Date> > list =
                 new LinkedList<Map.Entry<String, Date> >(hm.entrySet());
 
-        // Sort the list
         Collections.sort(list, new Comparator<Map.Entry<String, Date> >() {
             public int compare(Map.Entry<String, Date> o1,
                                Map.Entry<String, Date> o2)
@@ -18,7 +16,6 @@ class SubscriptionService {
             }
         });
 
-        // put data from sorted list to hashmap
         HashMap<String, Date> temp = new LinkedHashMap<String, Date>();
         Collections.reverse(list)
         for (Map.Entry<String, Date> aa : list) {
@@ -28,7 +25,6 @@ class SubscriptionService {
     }
 
     def topicSubscribedByUser(User currUser){
-//        return Subscription.findAllByUser(currUser)
 
         List tempSubList = Subscription.createCriteria().list{
             eq("user",currUser)
@@ -47,8 +43,6 @@ class SubscriptionService {
                 eq("topic", sub.topic)
                 order("lastUpdated", "desc")
             }
-
-            println "res ------------>" + res
             if(!res[0]){
                 Date defaultDate = new Date()
                 defaultDate.setMonth(1)

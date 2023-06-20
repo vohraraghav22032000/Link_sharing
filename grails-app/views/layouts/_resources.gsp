@@ -5,16 +5,6 @@
   Time: 10:11 AM
 --%>
 
-%{--<%@ page contentType="text/html;charset=UTF-8" %>--}%
-%{--<html>--}%
-%{--<head>--}%
-%{--    <title></title>--}%
-%{--</head>--}%
-
-%{--<body>--}%
-
-%{--</body>--}%
-%{--</html>--}%
 
 <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
@@ -39,9 +29,9 @@
         <h3 style="margin-left: 25px">Posts</h3>
     </div>
     <div class="col-9">
-        <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="dashboard" action="resources">
+        <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="dashboard">
             <div class="input-group">
-                <g:field name="search" style="width: 100px" type="search" placeholder="Search" class="form-control" id="" />
+                <g:field name="search" style="width: 100px" type="search" placeholder="Search" class="form-control" id="" required="true" />
                 <div class="input-group-append">
                     <g:submitButton name="Search" style="margin-left: 20px ;margin-right:20px" class="btn btn-outline-success" type="submit">Search</g:submitButton>
                 </div>
@@ -51,7 +41,6 @@
 </div>
 
 
-%{--<hr>--}%
 <tr>
     <th class="th-sm">
     </th>
@@ -65,9 +54,9 @@
                 <div class="container ">
         <div class="row">
             <div class="col-3">
-            <g:if test="${item.user.photo}">
-                <g:link controller="Dashboard" action="allUsers" params="[userId : item.user.id]">
-                    <g:img dir="images" file="${item.user.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="100px" width="100px" margin-right="20px" />
+            <g:if test="${item.resource.createdBy.photo}">
+                <g:link controller="Dashboard" action="allUsers" params="[userId : item.resource.createdBy.id]">
+                    <g:img dir="images" file="${item.resource.createdBy.photo.substring(25)}" style="border: 2px solid black;border-radius: 10px" height="100px" width="100px" margin-right="20px" />
                 </g:link>
             </g:if>
             <g:else>
@@ -80,11 +69,11 @@
             <div class="col-9">
                 <div class="row">
                     <div class="col-4">
-                        ${item.user.firstname}
+                        ${item.resource.createdBy.firstname}
                     </div>
                     <div class="col-4">
-                        <g:link controller="Dashboard" action="allUsers" params="[userId : item.user.id]">
-                           ${item.user.username}
+                        <g:link controller="Dashboard" action="allUsers" params="[userId : item.resource.createdBy.id]">
+                           ${item.resource.createdBy.username}
                         </g:link>
                     </div>
                     <div class="col-4">
@@ -127,7 +116,6 @@
                         <button id="${item.id}" class="btnread markRead">Mark Read</button>
                     </div>
                     <div class="col-2">
-%{--                        ${item.resourceId}--}%
                         <g:link value="${item.resource.topic.name}" params="[topicId: item.resource.topic.id , resourceId : item.resource.id]" controller="postShow" action="index">
                             <button class="btnread">Post</button>
                         </g:link>

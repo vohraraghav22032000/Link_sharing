@@ -48,7 +48,21 @@
         border-collapse: separate !important;
         border-radius: 20px ;
     }
-    </style>
+    #error-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: red !important;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+     </style>
 </head>
     <body>
     <%
@@ -57,8 +71,6 @@
         response.setHeader("Expires", "0");
         response.setHeader ("Clear-Site-Data", "\"cache\"");
         response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-//            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
         if(session==null)
             response.sendRedirect(url : "/index");
@@ -73,6 +85,16 @@
         </div>
         </div>
 
+    </g:if>
+    <g:if test="${flash.errorMessage}">
+
+        <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+            <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        </div>
     </g:if>
 
     <g:render template="/layouts/topicPostNavbar" model="[subscriptionList:subscriptionList, isAdmin : isAdmin]" />
@@ -105,7 +127,6 @@
                                 </td>
                             </tr>
                         </g:each>
-                        <!-- Add more rows here as needed -->
                         </tbody>
                     </table>
                 </div>
@@ -123,17 +144,6 @@
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
         <!-- Initialize DataTable -->
         <script>
-            $(document).ready(function() {
-                $('#usersTable').DataTable({
-                    // cache: false,
-                    // height: 400,
-                    // striped: true,
-                    // pagination: true,
-                    // pageSize: 5, //specify 5 here
-                    // pageList: [5, 10, 25, 50, 100, 200]
-                    //
-                });
-            });
             $(document).ready(function() {
                 $("body").on('click', '.deleteBtn', function (e){
                     $.ajax({

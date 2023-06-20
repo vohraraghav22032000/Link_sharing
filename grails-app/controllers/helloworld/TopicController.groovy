@@ -11,11 +11,6 @@ class TopicController {
             redirect(url :"/index")
             return
         }
-        def myList = topicService.getTopRecentPosts()
-        //def recentList = topicService.getAllPosts()
-        render recentList
-        //[posts: myList]
-       // render(template: '/layouts/recentShares' , model : [abc: "", posts : [1, 2]])
     }
 
     def saveTopic(){
@@ -24,8 +19,8 @@ class TopicController {
         def topicCreatedByUserName = topicCreatedByUser.collect { topic -> topic.name}
 
         if(topicCreatedByUserName.contains(params.topicName)){
-            flash.successMessage = "This topic has already been created By You"
-            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
+            flash.errorMessage= "This topic has already been created By You"
+            redirect(url : "/dashboard", model :['msg' : flash.errorMessage ])
         }
         else{
             boolean flag = topicService.saveTopicUsingCredentials(params , user)
@@ -35,23 +30,15 @@ class TopicController {
                 redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
             }
             else{
-                flash.successMessage = "Topic name should not be greater than 128 characters"
-                redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
+                flash.errorMessage = "Topic name should not be greater than 128 characters"
+                redirect(url : "/dashboard", model :['msg' : flash.errorMessage ])
             }
         }
     }
 
-    def getAllPosts(){
-        def result = topicService.getAllPosts()
-        render result
-    }
-
     def updateVisibility(){
-        println "params in delete subscription" + params
         def topic = Topic.get(params.topicId)
         if (topic) {
-//            println "topic found" + topic
-
             if(params.selectedOption=='PRIVATE'){
                 topic.visibility = Visibility.PRIVATE
             }
@@ -67,14 +54,9 @@ class TopicController {
     }
 
     def deleteTopic(){
-
-        print "delete topic" + params
         def topic = Topic.get(params.topicId)
         if (topic) {
             topic.delete(flush: true)
-            println "Successfully deleted the topic"
-//            flash.successMessage = "Topic deleted Successfully"
-//            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
             render(status: 200, text: 'Topic deleted')
         } else {
             println "Topic Not found"
@@ -83,39 +65,28 @@ class TopicController {
     }
 
     def updateTopicName(){
-//        println "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%params in update topic name-------->" + params
-        print "delete topic" + params
-
         def topic = Topic.get(params.topicId)
-        if (params.newTopicName.length()<128) {
+        if (params.newTopicName.length()<128 && params.newTopicName.trim() != '') {
             println "topic found successfully"
             topic.name = params.newTopicName
             topic.save(flush: true , failOnError:true)
-//            flash.successMessage = "Topic name updated Successfully"
-//            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
-//            render ([message: "Thanks for your subscription"] )
             render(status: 200, text: 'Topic name updated Successfully')
         }
         else{
                 render(status: 404, text: 'Topic Name not updated successfully')
-//            println "topic not found"
-//            flash.successMessage = "Topic name not updated Successfully"
-//            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
         }
     }
 
 
     def sendInvitation(){
-        println "params in send invitation" + params
         def flag = topicService.sendInvite(params)
         if(flag){
             flash.successMessage = "invitation sent successfully"
             redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
         }
         else {
-            flash.successMessage = "Please enter valid email"
-            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
+            flash.errorMessage = "Please enter valid email"
+            redirect(url : "/dashboard", model :['msg' : flash.errorMessage ])
         }
     }
-
 }

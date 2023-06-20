@@ -22,7 +22,7 @@
             transform: translateX(-50%);
             width: 300px;
             background-color: darkgrey;
-            color: white;
+            color: black;
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -43,8 +43,22 @@
         .btn-close:hover {
             opacity: 1;
         }
+        #error-message {
+            z-index: 9999;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            background-color: red !important;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
-        </style>
+
+         </style>
     </head>
     <body>
     <%
@@ -53,8 +67,6 @@
         response.setHeader("Expires", "0");
         response.setHeader ("Clear-Site-Data", "\"cache\"");
         response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-//            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
         if(session==null)
             response.sendRedirect(url : "/index");
@@ -68,7 +80,16 @@
             </div>
         </div>
         </div>
+    </g:if>
+    <g:if test="${flash.errorMessage}">
 
+        <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+            <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        </div>
     </g:if>
 
     <g:render template="/layouts/profileNavbar" model="[isAdmin : isAdmin]"/>
@@ -86,9 +107,9 @@
                                 <h2>Topics</h2>
                             </div>
                             <div class="col-9">
-                                <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="admin" action="profileTopicView">
+                                <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="admin" action="editProfileView">
                                     <div class="input-group">
-                                        <g:field name="search" style="width: 100px" type="search" placeholder="Search" class="form-control" id="" />
+                                        <g:field name="search" style="width: 100px" type="search" placeholder="Search" class="form-control" id="" required="true" />
                                         <div class="input-group-append">
                                             <g:submitButton name="Search" style="margin-left: 20px ;margin-right:20px" class="btn btn-outline-success" type="submit">Search</g:submitButton>
                                         </div>
@@ -96,21 +117,18 @@
                                 </g:form>
                             </div>
                         </div>
-                        <hr>
-
-%{--                        <g:render template="/layouts/subscriptions" model="[subscriptionList : subscriptionList ,subscriptionListName: subscriptionListName ,  user : user , topicCreatedByUserName: topicCreatedByUserName , isAdmin: isAdmin , topicMap: topicMap]"/>--}%
                         <div>
-%{--                        <table id="topics" class="table" width="100%">--}%
-%{--                            <thead>--}%
-%{--                            <tr>--}%
-%{--                                <th class="th-sm">--}%
-%{--                                </th>--}%
-%{--                            </tr>--}%
-%{--                            </thead>--}%
-%{--                            <tbody>--}%
+                        <table id="topicsCreatedByUser" class="table table-striped" width="100%">
+                            <thead>
+                            <tr>
+                                <th class="th-sm">
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             <g:each in="${topicsCreatedByUserList}" var="item" >
-%{--                                <tr>--}%
-%{--                                    <td>--}%
+                                <tr>
+                                    <td>
                                         <div class="container">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -125,9 +143,6 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-4">
-    %{--                                               <g:select name="${item.topic.id}" id="${item.topic.id}" class="updateVisibility" from="${['PUBLIC','PRIVATE'] ---}%
-    %{--                                                ["${item.topic.visibility}"]}" value="${item.topic.visibility}"--}%
-    %{--                                                  noSelection="${['':item.topic.visibility]}" />--}%
                                                     <p>Subscriptions: ${topicMap.get(item).subscribedCount}</p>
                                                 </div>
                                                 <div class="col-2">
@@ -184,12 +199,11 @@
                                                 </div>
                                             </div>
                                         </div>
-%{--                                    </td>--}%
-%{--                                </tr>--}%
-                                <hr>
+                                    </td>
+                                </tr>
                             </g:each>
-%{--                            </tbody>--}%
-%{--                          </table>--}%
+                            </tbody>
+                          </table>
                     </div>
                     </div>
                 </div>
@@ -199,13 +213,13 @@
                     <h2>Profile</h2>
                     <g:uploadForm controller="register" action="updateProfile">
                         <label for="firstname">First Name:</label>
-                        <input type="text" id="firstname" name="firstname" required>
+                        <input type="text" id="firstname" name="firstname" required pattern="[A-Za-z]{3,}">
                         <label for="lastname">Last Name:</label>
-                        <input type="text" id="lastname" name="lastname" required>
+                        <input type="text" id="lastname" name="lastname" required pattern="[A-Za-z]{3,}">
                         <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" required>
+                        <input type="text" id="username" name="username" required >
                         <label for="photo">Photo:</label>
-                        <input type="file" id="photo" name="photo" required>
+                        <input type="file" id="photo" name="photo">
                         <input type="submit" value="Update" style = "width: 150px;margin-left: 225px;">
                     </g:uploadForm>
                 </div>
@@ -213,9 +227,11 @@
                     <h2>Change Password</h2>
                     <g:form name = "updateForm" controller="register" action="updatePassword">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" required pattern="^[^\s]{8,}$"
+                               title="Must contain at least 8 or more characters">
                         <label for="confirmpassword">Confirm Password:</label>
-                        <input type="password" id="confirmpassword" name="confirmpassword" required>
+                        <input type="password" id="confirmpassword" name="confirmpassword" required pattern="^[^\s]{8,}$"
+                               title="Must contain at least 8 or more characters">
                         <input type="submit" value="Update" style = "width: 150px;margin-left: 225px;">
                     </g:form>
                 </div>
@@ -224,19 +240,17 @@
         <script src = "/home/raghavvohra/helloworld/grails-app/assets/javascripts/navbarTemplate.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 
-    <!-- Load jQuery and Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
-        <!-- Initialize DataTable -->
         <script>
 
             $(document).ready(function() {
-                // $('#topics').DataTable({
-                //     "lengthChange": false,
-                //     "searching" : false
-                // });
+                $('#topicsCreatedByUser').DataTable({
+                    "lengthChange": false,
+                    "searching" : false
+                });
                 $('.deleteBtn3').click(function (event){
                     var topicId = this.id
                     console.log("raghav")

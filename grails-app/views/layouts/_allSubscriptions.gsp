@@ -24,10 +24,14 @@
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-6">
-                            <p>${item.name}</p>
+                            <g:link  value="${item.name}" params="[topicId: item.id]" controller="topicShow" action="index">
+                                <p>${item.name}</p>
+                            </g:link>
                         </div>
                         <div class="col-6">
-                            <p>${item.createdBy.username}</p>
+                            <g:link controller="Dashboard" action="allUsers" params="[userId : item.createdBy.id]">
+                                <p>${item.createdBy.username}</p>
+                            </g:link>
                         </div>
                     </div>
                     <div class="row">

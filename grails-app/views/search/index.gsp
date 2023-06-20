@@ -20,6 +20,54 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
+
+    <style>
+    #success-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: darkgrey;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .toast-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+    }
+
+    .btn-close {
+        color: white;
+        opacity: 0.5;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+    #error-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: red !important;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+
+    </style>
+
 </head>
 
 <body>
@@ -30,8 +78,6 @@
         response.setHeader("Expires", "0");
         response.setHeader ("Clear-Site-Data", "\"cache\"");
         response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-    //            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
         if(session==null)
             response.sendRedirect(url : "/index");
@@ -48,6 +94,16 @@
         </div>
 
     </g:if>
+    <g:if test="${flash.errorMessage}">
+
+        <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+            <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        </div>
+    </g:if>
 
 <g:render template="/layouts/topicPostNavbar" model="[user : user ,subscriptionList : subscriptionList , isAdmin : isAdmin , topicCreatedByUserList : topicCreatedByUserList ]"/>
 
@@ -55,7 +111,8 @@
     <div class="sidebar-left">
         <div>
             <div class="trending-topics"  style="border: 2px solid black;border-radius : 10px">
-                <h2>Trending Topics</h2>
+                <h2 style="margin-left: 10px">Trending Topics</h2>
+                <hr>
                 <g:each in="${trendingList}" var = "item">
                     <div class="container">
                         <div class="row">
@@ -88,11 +145,11 @@
                                 <div>
                                     <g:if test="${topicMap.get(item[0]).topicCreatedBy.username!=session.username}">
                                         <g:if test="${subscriptionListName.contains(item[0].name)}">
-                                            <button id = "${item[0].id}" class="unsubscribeBtn btn btn-danger">Unsubscribe</button>
+                                            <button id = "${item[0].id}" class="unsubscribeBtn btn btn-dark">Unsubscribe</button>
                                         </g:if>
 
                                         <g:else>
-                                            <button id = "${item[0].id}" class="subscribeBtn btn btn-success">Subscribe</button>
+                                            <button id = "${item[0].id}" class="subscribeBtn btn btn-secondary">Subscribe</button>
                                         </g:else>
                                     </g:if>
                                 </div>
@@ -104,11 +161,17 @@
             </div>
         </div>
         <div style="border: 2px solid black;border-radius: 8px;margin-top: 10px">
-            <h4>Top Posts</h4>
+            <h2 style="margin-left: 10px">Top Posts</h2>
+            <hr>
             <g:each in ="${topRatingPost}" var = "item">
                 <div class="row" style="height: 90px">
                     <div class="col-3">
-                        <img src="${resource(dir: 'images', file: 'defaultImage.png')}" style="border: 2px solid black;border-radius : 10px;margin-left: 20px"  margin-right="20px" height="70px" width="70px"alt="Example Image">
+                        <g:if test="${item.user.photo}">
+                            <g:img dir="images" file="${item.user.photo.substring(25)}" style="border: 2px solid black;border-radius : 10px;margin-left: 10px;" height="70px" width="70px"/>
+                        </g:if>
+                        <g:else>
+                            <img src="${resource(dir: 'images', file: 'defaultImage.png')}"  style="margin-left:10px;border: 2px solid black;border-radius : 10px" width="70px" height="70px" alt="Example Image">
+                        </g:else>
                     </div>
                     <div class="col-9">
                         <div class="row">
@@ -129,6 +192,7 @@
                         </div>
                     </div>
                 </div>
+                <hr>
             </g:each>
         </div>
     </div>

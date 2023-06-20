@@ -1,19 +1,21 @@
 package helloworld
 
+import Enum.Visibility
+
+import java.util.Calendar
+import grails.gorm.transactions.Transactional
+import org.hibernate.criterion.Restrictions
+
 class LoginController {
 
-    def LoginService
-
-    def index() {
-        if(session.username!=null){
-            redirect(url :"/dashboard")
+    def index(){
+        if(session.username==null){
+            redirect(url :"/index")
             return
         }
-        render(view:"index")
     }
 
     def logoutUser(){
-        flash.loggedIn = false
         session.invalidate()
         redirect(url:"/")
     }

@@ -47,6 +47,20 @@
         border-collapse: separate !important;
         border-radius: 20px ;
     }
+    #error-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: red !important;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
 
     </style>
 
@@ -58,8 +72,6 @@
         response.setHeader("Expires", "0");
         response.setHeader ("Clear-Site-Data", "\"cache\"");
         response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-//            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
         if(session==null)
             response.sendRedirect(url : "/index");
@@ -76,13 +88,20 @@
         </div>
 
     </g:if>
+    <g:if test="${flash.errorMessage}">
+
+        <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+            <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        </div>
+    </g:if>
 
     <g:render template="/layouts/topicPostNavbar" model="[subscriptionList : subscriptionList , isAdmin : isAdmin]"/>
-%{--        <div class="container" style="margin-top: 50px">--}%
-%{--            <div class="row">--}%
                 <div class="container " style="margin-top: 50px">
                     <table class="table table-responsive table-striped dataTables_length" id="usersTable">
-%{--                        <table>--}%
                         <thead>
                         <tr>
                             <th><i class="bi bi-sort-up"></i>ID</th>
@@ -116,13 +135,9 @@
                                     </g:else>
                                 </tr>
                             </g:each>
-                        <!-- Add more rows here as needed -->
                         </tbody>
                     </table>
                 </div>
-%{--            </div>--}%
-%{--        </div>--}%
-
 
     <script src = "/home/raghavvohra/helloworld/grails-app/assets/javascripts/navbarTemplate.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
@@ -147,9 +162,6 @@
                     pageSize: 5, //specify 5 here
                     pageList: [5, 10, 25, 50, 100],
                     showButtonIcons: true,
-                    // dom: "<'row gridheader'<'col-sm-12 col-md-12'B>>"
-                    //     + "<'row'<'col-sm-12'tr>>"
-                    //     + "<'row gridfooter'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
                 });
                 $("body").on('click', '.deactive', function (e){
                     var userId = this.id

@@ -10,33 +10,30 @@ class SearchController {
 
 
     def index() {
-//        println "params in search function-----------###################------->" + params
         if(session.username == null){
             redirect(url :"/index")
             return
         }
         if(params.search.length()>128){
-            flash.successMessage = "search content should not exceed 128 characters"
-            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
+            flash.errorMessage= "search content should not exceed 128 characters"
+            redirect(url : "/dashboard", model :['msg' : flash.errorMessage ])
         }
         User user = User.findByUsername(session.username)
+        if(!user.admin && params.search.length()==0){
+            flash.errorMessage = "please enter some text"
+            redirect(url : "/dashboard", model :['msg' : flash.errorMessage])
+        }
         def allTopics = Topic.createCriteria().list {}
-
         allTopics = allTopics.sort { a, b -> a.name <=> b.name }
-
         def topicMap = dashboardService.createTopicMap(allTopics)
-
         def trendingList = topicService.getTrendingPosts(user)
         def subscriptionList = subscriptionService.topicSubscribedByUser(user)
         def isAdmin = user.admin
-        def subscriptionListName = subscriptionList.collect { subs->
-            subs.topic.name
-        }
+        def subscriptionListName = subscriptionList.collect { subs-> subs.topic.name}
         def recentList = topicService.getTopRecentPosts()
         def allPosts = ReadingItem.createCriteria().list(){
             eq("isRead" , false)
         }
-
         def topRatingPost = ResourceRating.createCriteria().list(){
             order("score","desc")
             resource{
@@ -47,10 +44,7 @@ class SearchController {
             maxResults 5
         }
 
-
         def searchOutput = searchService.searchWithParams(params.search)
-        println "searchOutput -----> $searchOutput"
-
 
         render (view: "index",model: [recentList : recentList , trendingList : trendingList,
          subscriptionList : subscriptionList , isAdmin : isAdmin , user : user ,allPosts : allPosts,
@@ -60,26 +54,12 @@ class SearchController {
     }
 
     def withoutLogin(){
-
         if(params.search.length()>128){
-            flash.successMessage = "search content should not exceed 128 characters"
-            redirect(url : "/index", model :['msg' : flash.successMessage ])
+            flash.errorMessage = "search content should not exceed 128 characters"
+            redirect(url : "/index", model :['msg' : flash.errorMessage ])
         }
-//        def recentList = topicService.getTopRecentPosts()
         def recentList = searchService.searchRecentListWithoutLogin(params.search)
-        def topRatingPost = ResourceRating.createCriteria().list(){
-            order("score","desc")
-            resource{
-                topic{
-                    eq("visibility", Visibility.PUBLIC)
-                }
-            }
-            maxResults 5
-        }
+        def topRatingPost = searchService.searchtopRatingPostWihoutLogin(params.search)
         render(view : "withoutLogin",model:[recentList: recentList , topRatingPost: topRatingPost])
     }
-    def getDownloadName() {
-        return "${name}.${extension}"
-    }
-
 }

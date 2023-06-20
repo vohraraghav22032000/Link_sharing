@@ -27,6 +27,15 @@ class PostShowController {
             eq("topic",topic)
         }
         def trendingList = topicService.getTrendingPosts()
+        def numberOfUsersRatedResource = ResourceRating.createCriteria().list(){
+            eq("resource",resource)
+        }
+        Float averageScore = 0.0
+        Integer totalSize = numberOfUsersRatedResource.size()
+        numberOfUsersRatedResource.each{rating->
+            averageScore += rating.score
+        }
+        averageScore /= (Float)totalSize
 
         if(session.username){
             user = User.findByUsername(session.username)
@@ -41,11 +50,12 @@ class PostShowController {
             }
         }
         def topicPosts = Resource.createCriteria().list(){eq("topic",topic)}
-        if(topic){
+        if(topic && resource){
             render(view:"index" ,model: [subscriptionList : subscriptionList ,topic:topic,allSubUser:allSubUser,
                topicPosts : topicPosts , user:user , isAdmin : isAdmin
                , subscriptionListName : subscriptionListName , trendingList : trendingList , topicMap : topicMap,
-               resource : resource,posts : recentList , alreadyRatedScore : alreadyRatedScore])
+               resource : resource,posts : recentList , alreadyRatedScore : alreadyRatedScore,
+                   averageScore : averageScore,numberOfUsersRatedResource : numberOfUsersRatedResource])
         }
         else{
             redirect(url:"/dashboard")

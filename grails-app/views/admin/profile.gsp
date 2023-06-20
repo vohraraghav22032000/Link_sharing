@@ -45,6 +45,20 @@
     .btn-close:hover {
         opacity: 1;
     }
+    #error-message {
+        z-index: 9999;
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: red !important;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
 
     </style>
 </head>
@@ -55,8 +69,6 @@
         response.setHeader("Expires", "0");
         response.setHeader ("Clear-Site-Data", "\"cache\"");
         response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
-
-//            response.sendRedirect("/index?${System.currentTimeMillis()}");
 
         if(session==null)
             response.sendRedirect(url : "/index");
@@ -73,6 +85,16 @@
         </div>
 
     </g:if>
+    <g:if test="${flash.errorMessage}">
+
+        <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
+            <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        </div>
+    </g:if>
 
     <g:render template="/layouts/profileNavbar" model="[isAdmin : isAdmin]"/>
 
@@ -85,13 +107,7 @@
 
                     <table  class="userTable table table-striped" width="100%">
                         <thead>
-%{--                        <div class="row" style="margin-top: 10px">--}%
-%{--                            <div class="col-3">--}%
-%{--                                <h2 style="margin-left: 10px">Topics</h2>--}%
-%{--                            </div>--}%
-%{--                        </div>--}%
                         <h2 style="margin-left: 10px">Topics</h2>
-%{--                        <hr>--}%
                         <tr>
                             <th class="th-sm">
                             </th>
@@ -164,7 +180,6 @@
                                 </div>
                             </div>
                         </div>
-%{--                        <hr>--}%
                         </td>
                         </tr>
                     </g:each>
@@ -193,9 +208,9 @@
                                 <h3 style="margin-left: 25px">Posts</h3>
                             </div>
                             <div class="col-9">
-                                <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="admin" action="profilePostView">
+                                <g:form class="form-inline my-2 my-lg-0" style="display: flex;" controller="admin" action="profileView">
                                     <div class="input-group">
-                                        <g:field name="search" style="width: 100px" type="search" placeholder="Search" class="form-control" id="" />
+                                        <g:field name="search" style="width: 100px" type="search" placeholder="Search" class="form-control" id="" required="true" />
                                         <div class="input-group-append">
                                             <g:submitButton name="Search" style="margin-left: 20px ;margin-right:20px" class="btn btn-outline-success" type="submit">Search</g:submitButton>
                                         </div>
@@ -204,7 +219,6 @@
                             </div>
                         </div>
 
-%{--                        <hr>--}%
                         <tr>
                             <th class="th-sm">
                             </th>
@@ -239,13 +253,11 @@
                                         <g:if test="${item.resource.class as String == 'class helloworld.LinkResource'}">
                                             <a href="${item.resource.url}" target="_blank" >
                                                 <button class="btnread">Visit</button>
-                                                %{--                                View Site--}%
                                             </a>
                                         </g:if>
                                         <g:else>
                                             <a href="" target="_blank" download="${item.resource.filePath}">
                                                 <button class="btnread" >Download</button>
-                                                %{--                                Download Post--}%
                                             </a>
                                         </g:else>
                                     </div>
@@ -253,13 +265,11 @@
                                         <button id="${item.id}" class="btnread markRead">Mark Read</button>
                                     </div>
                                     <div class="col-2">
-                                    %{--                        ${item.resourceId}--}%
                                         <g:link value="${item.resource.topic.name}" params="[topicId: item.resource.topic.id , resourceId : item.resource.id]" controller="postShow" action="index">
                                             <button class="btnread">Post</button>
                                         </g:link>
                                     </div>
                                 </div>
-%{--                        <hr>--}%
                             </td>
                         </tr>
                     </g:each>

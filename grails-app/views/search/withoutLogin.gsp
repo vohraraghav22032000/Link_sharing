@@ -36,13 +36,12 @@
             <g:each in ="${recentList}" var = "item">
                 <div class="row" style="height: 90px">
                     <div class="col-3">
-                        <img src="${resource(dir: 'images', file: 'defaultImage.png')}" margin-left= "20px" margin-right="20px" height="70px" width="70px"alt="Example Image">
-                        %{--                            <g:if test="${item.createdBy.photo}">--}%
-                        %{--                                <g:img dir="images" file="${item.photo.substring(25)}" margin-left= "20px" margin-right="20px" height="70px" width="70px"/>--}%
-                        %{--                            </g:if>--}%
-                        %{--                            <g:else>--}%
-                        %{--                                <img src="${resource(dir: 'images', file: 'defaultImage.png')}" margin-left= "20px" margin-right="20px" height="70px" width="70px"alt="Example Image">--}%
-                        %{--                            </g:else>--}%
+                        <g:if test="${item.createdBy.photo}">
+                            <g:img dir="images" file="${item.createdBy.photo.substring(25)}" margin-left= "20px" style="border: 2px solid black;border-radius: 10px" margin-right="20px" height="70px" width="70px"/>
+                        </g:if>
+                        <g:else>
+                            <img src="${resource(dir: 'images', file: 'defaultImage.png')}" margin-left= "20px" margin-right="20px" style="border: 2px solid black;border-radius: 10px" height="70px" width="70px"alt="Example Image">
+                        </g:else>
                     </div>
                     <div class="col-9">
                         <div class="row">
@@ -80,7 +79,12 @@
             <g:each in ="${topRatingPost}" var = "item">
                 <div class="row" style="height: 90px">
                     <div class="col-3">
-                        <img src="${resource(dir: 'images', file: 'defaultImage.png')}" margin-left= "20px" margin-right="20px" height="70px" width="70px"alt="Example Image">
+                        <g:if test="${item.user.photo}">
+                            <g:img dir="images" file="${item.user.photo.substring(25)}" margin-left= "20px" style="border: 2px solid black;border-radius: 10px" margin-right="20px" height="70px" width="70px"/>
+                        </g:if>
+                        <g:else>
+                            <img src="${resource(dir: 'images', file: 'defaultImage.png')}" margin-left= "20px" style="border: 2px solid black;border-radius: 10px" margin-right="20px" height="70px" width="70px"alt="Example Image">
+                        </g:else>
                     </div>
                     <div class="col-9">
                         <div class="row">

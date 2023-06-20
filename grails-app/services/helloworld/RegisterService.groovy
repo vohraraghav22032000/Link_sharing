@@ -15,10 +15,15 @@ import org.springframework.mail.SimpleMailMessage
 //import org.springframework.security.crypto.password.PasswordEncoder
 //import org.springframework.security.crypto.password.RandomPasswordGenerator
 import java.security.SecureRandom
+import grails.core.support.GrailsApplicationAware
+import grails.core.GrailsApplication
+import grails.web.mapping.LinkGenerator
+
 
 @Transactional
 class RegisterService {
     MailSender mailSender
+    LinkGenerator grailsLinkGenerator
 
     def registerUserUsingCredentials(def params , def countFlag){
         User u = new User();
@@ -33,24 +38,12 @@ class RegisterService {
             || params.lastname.length()>=30 ){
             return false
         }
-//        if(params.password.length()<8){
-//            return false
-//        }
-
         try{
             def multipartFile = params.photo
-//            println "multipartFile" + multipartFile
             def photoExtension = multipartFile.getOriginalFilename().tokenize('.')[-1]
-    //        def photoExtension = multipartFile.getOriginalFilename()
-
-//            println "photoExtension" + photoExtension
             def bytes = multipartFile.getBytes()
-//            println "bytes" +bytes
             def url = "grails-app/assets/images/profilePicture/${params.username}.${photoExtension}"
             def newFile = new File("${url}")
-//            println url
-//            println "newFile" + newFile
-
             newFile.createNewFile()
             newFile.append(bytes)
             params.photo  = url
@@ -61,9 +54,6 @@ class RegisterService {
             println e
             u.photo = "grails-app/assets/images/defaultImage.png"
         }
-
-        println "---->"+params
-
         if(u.validate() && params.password == params.confirmpassword){
             if(countFlag==true){
                 u.admin = true
@@ -77,33 +67,36 @@ class RegisterService {
     }
 
     def updateProfileUsingCredentials(def params , User currUser){
-//        println "PARAMS IN UODATE PROFILE " + params
         currUser.firstname = params.firstname
         currUser.lastname = params.lastname
         currUser.username = params.username
+        if(params.photo instanceof MultipartFile && !params.photo.isEmpty()){
+            try{
+                def multipartFile = params.photo
+                def photoExtension = multipartFile.getOriginalFilename().tokenize('.')[-1]
 
-//        session.username = params.username
-        try{
-            def multipartFile = params.photo
-            def photoExtension = multipartFile.getOriginalFilename().tokenize('.')[-1]
+                def bytes = multipartFile.getBytes()
 
-            def bytes = multipartFile.getBytes()
+                def url = "grails-app/assets/images/profilePicture/${params.username}.${photoExtension}"
+                def newFile = new File("${url}")
 
-            def url = "grails-app/assets/images/profilePicture/${params.username}.${photoExtension}"
-            def newFile = new File("${url}")
+                newFile.createNewFile()
+                newFile.append(bytes)
+                params.photo  = url
+                currUser.photo = params.photo
+            }
+            catch(Exception e){
+                currUser.photo = "grails-app/assets/images/defaultImage.png"
+            }
 
-            newFile.createNewFile()
-            newFile.append(bytes)
-            params.photo  = url
-            currUser.photo = params.photo
+            currUser.save(flush:true , failOnError:true)
+            return true
+        }
+        else{
+            currUser.save(flush:true , failOnError:true)
+            return true
         }
 
-        catch(Exception e){
-            currUser.photo = "grails-app/assets/images/defaultImage.png"
-        }
-
-        currUser.save(flush:true , failOnError:true)
-        return true
     }
 
     def updatePasswordUsingCredentials(def params , User currUser){
@@ -118,45 +111,26 @@ class RegisterService {
     }
 
     def resetPassword(def params, User user){
-       println params
-        if(params.newPassword == params.confnewPassword){
-            user.password = params.newPassword
-            user.save(flush:true , failOnError : true)
+        try{
+            String subject = "Regarding your new password"
+
+            def msg = new SimpleMailMessage();
+            msg.setFrom("vohraraghav@outlook.com")
+
+            def resetPasswordUrl = "http://localhost:9090/index/resetPasswordUsingLink"
+
+            String mailText = "Click the following link to reset your password: ${resetPasswordUrl}"
+            msg.setTo(params.userEmail)
+            msg.setSubject(subject)
+            msg.setText(mailText)
+            mailSender.send(msg)
+
             return true
         }
-        else{
+        catch(Exception e){
+            println e
             return false
         }
-
-//        try{
-//            String subject = "Reagrding reset your password"
-//
-//            String alphabet = (('A'..'N')+('P'..'Z')+('a'..'k')+('m'..'z')+('2'..'9')).join()
-//            int n = 6
-//
-//            def newPassword = new Random().with {
-//                (1..n).collect { alphabet[ nextInt( alphabet.length() ) ] }.join()
-//            }
-//
-////            println "*******************new password generated is********" +  newPassword
-//            user.password = newPassword
-//            user.save()
-//            def msg = new SimpleMailMessage();
-//            msg.setFrom("vohraraghav@outlook.com")
-//            String  mailtext = "Your new password is " + newPassword
-//            msg.setTo(params.userEmail)
-//            msg.setSubject(subject)
-//            msg.setText(mailtext)
-//            mailSender.send(msg)
-//
-//            return true
-//        }
-//        catch(Exception e){
-//            println e
-//            return false
-//        }
-//
-
     }
 
 }

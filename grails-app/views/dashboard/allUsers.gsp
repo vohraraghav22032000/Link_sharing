@@ -1,9 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: raghavvohra
-  Date: 05/06/23
-  Time: 11:29 AM
---%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
@@ -38,7 +32,6 @@
                 <div style="border: 2px solid black;border-radius : 10px">
                     <h3 style="margin-left: 15px">Profile</h3>
                     <hr>
-%{--                    <p>user id : ${userProfile}</p>--}%
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-md-3" >
                             <g:if test="${userProfile.photo}">
@@ -90,6 +83,7 @@
                                     <g:link  params="[topicId: item.id]" controller="topicShow" action="index">
                                         <h5 style="margin-left: 15px">${item.name}</h5>
                                     </g:link>
+
                                     <div class="row">
                                         <div class="col-2">
 
@@ -103,8 +97,6 @@
                                     </div>
                                 </td>
                             </tr>
-
-%{--                        <hr>--}%
                     </g:each>
                         </tbody>
                     </table>
@@ -161,7 +153,6 @@
                                 </div>
                             </td>
                         </tr>
-%{--                        <hr>--}%
                     </g:each>
                         </tbody>
                 </table>
@@ -172,7 +163,6 @@
             <div class="container">
                 <div style="border: 2px solid black;border-radius : 10px">
                     <h3 style="margin-left: 15px">Resources</h3>
-%{--                    <hr>--}%
                     <table  class="table allUsersTable table-striped" width="100%">
                         <thead>
                         <tr>
@@ -226,8 +216,6 @@
                                 </div>
                             </td>
                         </tr>
-
-%{--                        <hr>--}%
                     </g:each>
                         </tbody>
                 </table>

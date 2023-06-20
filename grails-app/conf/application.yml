@@ -108,8 +108,8 @@ dataSource:
     jmxExport: true
     driverClassName: oracle.jdbc.OracleDriver
     dialect: org.hibernate.dialect.Oracle12cDialect
-    username: linksharing15
-    password: linksharing15
+    username: linksharing30
+    password: linksharing30
 
 
 environments:

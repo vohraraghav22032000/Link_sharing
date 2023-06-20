@@ -15,22 +15,18 @@ class DocumentResourceController {
 
     def saveDocumentResource(){
         User user = User.findByUsername(session.username)
-//        render params
         boolean flag = documentResourceService.saveDocumentUsingCredentials(params , user)
-
         if(flag){
-            //render("Your Topic is saved successfully")
             flash.successMessage = "Documents Resources are saved successfully"
             redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
         }
         else{
-            flash.successMessage = "Please enter valid file and description"
-            redirect(url : "/dashboard", model :['msg' : flash.successMessage ])
+            flash.errorMessage = "Please enter valid file and description"
+            redirect(url : "/dashboard", model :['msg' : flash.errorMessage ])
         }
     }
 
     def deletePost(){
-        print params
         def resource = Resource.get(params.resourceId)
         if (resource) {
             resource.delete(flush: true)

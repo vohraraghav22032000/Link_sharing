@@ -9,6 +9,12 @@ class TopicShowController {
 
     def index() {
         def topic = Topic.get(Integer.parseInt(params.topicId))
+        if(params.search!=null){
+            if(params.search.length()>128){
+                flash.errorMessage = "search content should not exceed 128 characters"
+                redirect(url : "/topicShow", model :['msg' : flash.errorMessage ,topicId : params.topicId])
+            }
+        }
 
         User user = null
         def isAdmin = false
@@ -35,9 +41,22 @@ class TopicShowController {
             allSubUserMap[us] = [subscribedCountOfUser: subscribedCount, topicCountOfUser: topicCount ]
         }
 
-        def topicPosts = Resource.createCriteria().list(){
-            eq("topic",topic)
-            order("lastUpdated","desc")
+        def topicPosts
+
+        if(params.search==null) {
+            topicPosts = Resource.createCriteria().list() {
+                eq("topic", topic)
+                order("lastUpdated", "desc")
+
+            }
+        }
+        else{
+            topicPosts = Resource.createCriteria().list(){
+                and{
+                    eq("topic", topic)
+                    ilike('description', "%$params.search%")
+                }
+            }
         }
 
         if (topic) {

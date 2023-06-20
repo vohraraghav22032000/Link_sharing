@@ -44,17 +44,14 @@
                                                     </g:else>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    %{--                    <g:link id = "topicName" value="${item.topic.name}" params="[topicId: item.topic.id]" controller="topicShow" action="index">${item.topic.name}</g:link>--}%
                                                     <g:link id = "topicName" value="${item.topic.name}" params="[topicId: item.topic.id]" controller="topicShow" action="index">${item.topic.name}</g:link>
                                                     <g:link controller="Dashboard" action="allUsers" params="[userId : item.topic.createdBy.id]">
                                                         <div>${item.topic.createdBy.username}</div>
                                                     </g:link>
                                                     <div class="row">
                                                         <div class="col-6">
-%{--                                                            <div><strong>Subscriptions:</strong>${topicMap.get(item.topic).subscribedCount}</div>--}%
                                                         </div>
                                                         <div class="col-6">
-%{--                                                            <div><strong>Posts:</strong>${topicMap.get(item.topic).postCount}</div>--}%
                                                         </div>
                                                     </div>
                                                 </div>
@@ -92,11 +89,7 @@
                                                     </g:else>
                                                 </div>
                                                 <div class="col-md-8">
-                                                    %{--                    <g:link id = "topicName" value="${item.topic.name}" params="[topicId: item.topic.id]" controller="topicShow" action="index">${item.topic.name}</g:link>--}%
                                                     <g:link id = "topicNameModal" value="${item.name}" params="[topicId: item.id]" controller="topicShow" action="index">${item.name}</g:link>
-
-                                                    %{--                                                <h6>${item.name}</h6>--}%
-                                                    %{--                                                <h6>${item.createdBy.username}</h6>--}%
                                                     <div class="row">
                                                         <div class="col-7">
                                                             <p><strong>Subscriptions:</strong>${topicMap.get(item).subscribedCount}</p>
@@ -117,12 +110,6 @@
                     </div>
                 </div>
             </div>
-%{--            <div class="col-md-3">--}%
-%{--                --}%
-%{--            </div>--}%
-%{--            <div class="col-md-3">--}%
-%{--                --}%
-%{--            </div>--}%
         </div>
     </div>
 </div>

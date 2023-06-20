@@ -25,11 +25,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <g:form class="form-inline my-2 my-lg-0" style="display: flex;align-items: center;" controller="search" >
-    %{--        <input class="form-control mr-sm-2" style="margin-left: 360px;width: 225px" type="search" placeholder="Search" aria-label="Search" name="search">--}%
-        <g:field name="search" style="margin-left: 360px;width: 225px" type="search" placeholder="Search" class="form-control" id="" />
-    %{--        <g:submitButton class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 10px" type="submit">--}%
-    %{--            Search--}%
-    %{--        </g:submitButton>--}%
+        <g:field name="search" style="margin-left: 560px;width: 225px" type="search" placeholder="Search" class="form-control" id="" />
         <g:submitButton name="Search" class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 10px" type="submit">Search</g:submitButton>
     </g:form>
     <ul class="navbar-nav mr-auto">
@@ -67,17 +63,5 @@
     </ul>
 </nav>
 
-
-<script>
-
-//    $("#selectPicker1").click(function(){
-//        console.log("clicked")
-//        $.ajax({url: "/topic/getAllPosts", success: function(result){
-//                console.log(result)
-//            }});
-//    });
-
-
-</script>
 
 

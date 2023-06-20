@@ -8,9 +8,6 @@
 
 </head>
 
-<%
-    def counter = 0
-%>
 <table id="SubscriptionDataTable" class="table table-striped" width="100%">
     <thead>
     <tr>
@@ -23,10 +20,6 @@
         <g:each in="${subscriptionList}" var="item" >
             <tr>
                 <td>
-                <g:if test="${counter < 5}">
-                    <%
-                        counter++
-                    %>
                     <div class="container">
                         <div class="row">
                             <div class="col-md-3">
@@ -44,11 +37,9 @@
                             <div class="col-md-9">
                                 <div class="row">
                                     <div class="col-8">
-
                                         <g:link class= "topicName-${item.topic.id}"  value="${item.topic.name}" params="[topicId: item.topic.id]" controller="topicShow" action="index">
                                             ${item.topic.name}
                                         </g:link>
-%{--                                        <a href="/topic?topicId=${subscribedTopic["topic"].id}" id="topicname-${subscribedTopic["topic"].id}" class="card-link col-sm-6 subscriptionTopicNameTag" style="text-decoration: none">${subscribedTopic["topic"].name}</a>--}%
                                         <button id="save-${item.topic.id}" value="saveBtn" name="saveBtn" class="btn btn-success subscriptionSaveBtn offset-1" onclick="saveTopicName()" style="display: none">Save</button>
                                         <button id="cancel-${item.topic.id}" value="cancelBtn" name="cancelBtn" class="btn btn-danger subscriptionCancelBtn" onclick="cancelTopicName()" style="display: none">Cancel</button>
 
@@ -144,7 +135,6 @@
                                 </div>
                             </div>
                         </div>
-                    %{--        button type="button" class="btn btn-success" id = "editTopic"><i class="bi bi-pencil-square"></i></button>--}%
                         <g:if test="${isAdmin || topicCreatedByUserName.contains(item.topic.name)}">
                             <button id="${item.topic.id}" class="edit-button btn btn-success"><i class="bi bi-pencil-square"></i></button>
                         </g:if>
@@ -152,13 +142,9 @@
                         <g:if test="${isAdmin || topicCreatedByUserName.contains(item.topic.name)}">
                             <button id = "${item.topic.id}" class="deleteBtn btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
                         </g:if>
-
-                    %{--            <g:link id="${item.topic.id}"  class="deleteBtn btn btn-danger"><i class="bi bi-trash3-fill"></i></g:link>--}%
                     </div>
-                </g:if>
                 </td>
             </tr>
-%{--            <hr>--}%
         </g:each>
     </tbody>
 </table>
@@ -167,11 +153,6 @@
 
 
     $(document).ready(function() {
-        $('#SubscriptionDataTable').DataTable({
-            "lengthChange": false,
-            "searching" : false
-        });
-
         $('.subscribeBtn2').click(function (event){
             console.log("raghav")
             var topicId = this.id
@@ -273,13 +254,12 @@
         saveBtn.style.display = "none"
         cancelBtn.style.display = "none"
         tag.contentEditable = false;
+        window.location.reload();
     }
     function saveTopicName(){
         console.log("save button clicked")
-        // let id = event.target.id
         let id = event.target.id.substring(5)
         console.log("id is + " + id)
-        // console.log(this.id)
 
         let tag = document.querySelector('.topicName-' + id);
         let saveBtn = document.querySelector('#save-'+id);
@@ -291,12 +271,13 @@
         tag.contentEditable = false;
         $.ajax({url: "/topic/updateTopicName?topicId="+id+"&newTopicName="+topicName
             , success: function(result){
-                // window.location.reload();
-                alert("Topic name updated successfully")
-            }, error: function(response) {
-            alert("Topic name does not exceeded 128 characters");
                 window.location.reload();
-        }});
+                // alert("Topic name updated successfully")
+            }, error: function(response) {
+                alert("Please enter correct topic name");
+                window.location.reload();
+            }
+        });
     }
 
 </script>
