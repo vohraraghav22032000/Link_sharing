@@ -22,7 +22,7 @@
 <body>
 
 <header>
-    <g:link controller="index"><h1>Link Sharing</h1></g:link>
+    <g:link controller="authentication"><h1>Link Sharing</h1></g:link>
     <g:form class="form-inline my-2 my-lg-0" style="display: flex;align-items: center;" controller="search" action="withoutLogin">
         <g:field name="search" style="margin-left: 360px;width: 225px" type="search" placeholder="Search" class="form-control" id="" required="true" />
         <g:submitButton name="Search" class="btn btn-outline-success my-2 my-sm-0" style="margin-left: 10px" type="submit">Search</g:submitButton>

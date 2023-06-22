@@ -2,10 +2,10 @@ package helloworld
 
 
 class IndexInterceptor {
-    IndexInterceptor(){
-        matchAll().excludes(controller : 'dashboard' ,action : 'index')
-        .excludes(controller : 'admin' )
-    }
+//    IndexInterceptor(){
+//        matchAll().excludes(controller : 'dashboard' ,action : 'index')
+//        .excludes(controller : 'admin' )
+//    }
 
 //    boolean before() {
 //        if(!session.username) {

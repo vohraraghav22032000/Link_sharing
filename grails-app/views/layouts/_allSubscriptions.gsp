@@ -44,7 +44,7 @@
                     </div>
                     <div class="row">
                         <g:if test="${topicMap.get(item).topicCreatedBy.username!=session.username}">
-                            <g:if test="${subscriptionListName.contains(item.name)}">
+                            <g:if test="${subscriptionListId.contains(item.id)}">
                                 <button id = "${item.id}"  class="unsubscribeBtn btn btn-dark">Unsubscribe</button>
                             </g:if>
                             <g:else>

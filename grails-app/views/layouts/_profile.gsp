@@ -50,8 +50,10 @@
                                                     </g:link>
                                                     <div class="row">
                                                         <div class="col-6">
+%{--                                                            <p><strong>Subscriptions:</strong>${topicMap.get(item.topic).subscribedCount}</p>--}%
                                                         </div>
                                                         <div class="col-6">
+%{--                                                            <p><strong>Posts:</strong>${topicMap.get(item.topic).postCount}</p>--}%
                                                         </div>
                                                     </div>
                                                 </div>

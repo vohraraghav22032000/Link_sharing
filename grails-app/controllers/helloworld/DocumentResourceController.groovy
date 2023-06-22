@@ -8,7 +8,7 @@ class DocumentResourceController {
 
     def index() {
         if(session.username==null){
-            redirect(url :"/index")
+            redirect(url :"/authentication")
             return
         }
     }
@@ -27,7 +27,7 @@ class DocumentResourceController {
     }
 
     def deletePost(){
-        def resource = Resource.get(params.resourceId)
+        Resource resource = Resource.get(params.resourceId)
         if (resource) {
             resource.delete(flush: true)
             render(status: 200, text: 'Resource deleted')

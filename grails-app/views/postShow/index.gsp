@@ -21,52 +21,7 @@
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
 
-    <style>
-    #success-message {
-        z-index: 9999;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        background-color: darkgrey;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .toast-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 10px;
-    }
-
-    .btn-close {
-        color: white;
-        opacity: 0.5;
-    }
-
-    .btn-close:hover {
-        opacity: 1;
-    }
-    #error-message {
-        z-index: 9999;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        background-color: red !important;
-        color: black;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'flashMessage.css')}">
 
 </head>
     <body>
@@ -78,7 +33,7 @@
             response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
 
             if(session==null)
-                response.sendRedirect(url : "/index");
+                response.sendRedirect(url : "/authentication");
         %>
         <g:if test="${flash.successMessage}">
 
@@ -95,7 +50,7 @@
 
             <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
                 <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-                    <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+                    <strong class="me-auto">${flash.errorMessage}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
                 </div>
             </div>
@@ -176,6 +131,7 @@
                                 </div>
                             </div>
                         </g:if>
+                        <hr>
 
                         <div class="row">
                             <p>${resource.description}</p>
@@ -247,7 +203,7 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <g:form controller="resourceRating" action="updateDocumentResource" params="[ resourceId : resource.id , topicId : topic.id]">
+                                                        <g:uploadForm controller="resourceRating" action="updateDocumentResource" params="[ resourceId : resource.id , topicId : topic.id]">
                                                             <div class="mb-3">
                                                                 <label for="docpath" class="col-form-label">Document</label>
                                                                 <input type="file" class="form-control-file" id="docpath" name="docpath" required="true">
@@ -260,7 +216,7 @@
                                                                 <g:submitButton name="Update" class="btn btn-primary">Update</g:submitButton>
                                                                 <g:link controller="Dashboard" action="index" class="btn btn-primary">Cancel</g:link>
                                                             </div>
-                                                        </g:form>
+                                                        </g:uploadForm>
                                                     </div>
                                                 </div>
                                             </div>
@@ -324,7 +280,7 @@
                                             </div>
                                             <div>
                                                 <g:if test="${topicMap.get(item[0]).topicCreatedBy.username!=session.username}">
-                                                    <g:if test="${subscriptionListName.contains(item[0].name)}">
+                                                    <g:if test="${subscriptionListId.contains(item[0].id)}">
                                                         <button id = "${item[0].id}" class="unsubscribeBtn btn btn-dark">Unsubscribe</button>
                                                     </g:if>
 
@@ -409,7 +365,7 @@
                     url : "/resourceRating/rateResource?score=" + $(this).attr("id") + "&resourceId=" + ${params.resourceId} ,
                     success : function(response){
                         console.log(response)
-                        alert("Your rating saved successfully");
+                        // alert("Your rating saved successfully");
                         window.location.reload();
                     }
                 });
@@ -421,7 +377,7 @@
                 $.ajax({
                     url : "/Subscription/addSubscription?topicId="+topicId, success : function(response){
                         // window.location.reload();
-                        alert("topic subscribed successfully");
+                        // alert("topic subscribed successfully");
                         window.location.reload();
                     }
                 });
@@ -434,7 +390,7 @@
                 $.ajax({
                     url : "/Subscription/deleteSubscription?topicId="+topicId, success : function(response){
                         // window.location.reload();
-                        alert("topic unsubscribed successfully")
+                        // alert("topic unsubscribed successfully")
                         window.location.reload();
                     }
                 });

@@ -10,7 +10,7 @@ class LoginController {
 
     def index(){
         if(session.username==null){
-            redirect(url :"/index")
+            redirect(url :"/authentication")
             return
         }
     }

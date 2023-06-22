@@ -12,7 +12,7 @@ class ReadingItemController {
     }
 
     def resourceReaded(){
-        def readingItem = ReadingItem.get(params.readingItemId)
+        ReadingItem readingItem = ReadingItem.get(params.readingItemId)
         if (readingItem) {
             readingItem.isRead = true
             readingItem.save(flush:true)

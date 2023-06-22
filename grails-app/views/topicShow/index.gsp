@@ -30,7 +30,7 @@
             response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
 
             if(session==null)
-                response.sendRedirect(url : "/index");
+                response.sendRedirect(url : "/authentication");
         %>
 
         <g:if test="${session.username}">
@@ -60,9 +60,9 @@
                             <div class="col-8">
                                 <h6>${topic.name}</h6>
                                 <g:if test="${user}">
-                                    <g:if test="${!topicCreatedByUserName.contains(topic.name)}">
+                                    <g:if test="${!topicCreatedByUserId.contains(topic.id)}">
                                         <g:if test="${topicMap.get(topic).topicCreatedBy.username!=session.username}">
-                                            <g:if test="${subscriptionListName.contains(topic.name)}">
+                                            <g:if test="${subscriptionListId.contains(topic.id)}">
                                                 <button id = "${topic.id}" class="unsubscribeBtn5 btn btn-dark">Unsubscribe</button>
                                             </g:if>
                                             <g:else>
@@ -186,7 +186,7 @@
                                             </g:else>
                                         </div>
                                         <div class="col-9">
-                                            <h4>${item.description}</h4>
+                                            <p>${item.description}</p>
                                             <div class="row">
                                                 <div class="col-1">
                                                     <a href="https://www.facebook.com" target="_blank">

@@ -7,14 +7,12 @@ class AdminController {
     def subscriptionService
     def searchService
     def dashboardService
+    def topicService
+    def readingItemService
 
     def index() {
         if(session.username==null){
             redirect(url :"/")
-            return
-        }
-        else{
-            redirect(url :"/admin/profileView")
             return
         }
     }
@@ -31,27 +29,26 @@ class AdminController {
             }
         }
         User user = User.findByUsername(session.username);
-        def subscriptionList = subscriptionService.topicSubscribedByUser(user)
-        def topicCount = Topic.createCriteria().count{
+        List subscriptionList = subscriptionService.topicSubscribedByUser(user)
+        int topicCount = Topic.createCriteria().count{
             eq("createdBy" , user)
         }
-        def allTopicsCreatedByUser
+        List allTopics = Topic.findAll()
+        List allTopicsCreatedByUser
         if(params.search==null){
-            allTopicsCreatedByUser = Topic.createCriteria().list(){
-                eq("createdBy" , user)
-            }
+            allTopicsCreatedByUser = topicService.topicCreatedByUser(user)
         }
         else{
             allTopicsCreatedByUser = searchService.searchWithParamsTopicView(params.search,user)
         }
 
-        def subscriptionListName = subscriptionList.collect { subs-> subs.topic.name}
-        def topicCreatedByUserName = allTopicsCreatedByUser.collect{topic-> topic.name}
-        def topicMap = dashboardService.createTopicMap(allTopicsCreatedByUser)
-        def subscribedCount = subscriptionList.size()
+        List subscriptionListId = subscriptionList.collect { subs-> subs.topic.id}
+        List topicCreatedByUserId = allTopicsCreatedByUser.collect{topic-> topic.id}
+        Map topicMap = dashboardService.createTopicMap(allTopics)
+        int subscribedCount = subscriptionList.size()
         boolean isAdmin = user.admin
         render(view: "editProfile" , model : [isAdmin : isAdmin , subscriptionList : subscriptionList,
-        subscriptionListName: subscriptionListName, topicCreatedByUserName: topicCreatedByUserName ,
+        subscriptionListId : subscriptionListId, topicCreatedByUserId: topicCreatedByUserId ,
         topicCount : topicCount , user : user , topicMap: topicMap ,
                topicsCreatedByUserList : allTopicsCreatedByUser , subscribedCount: subscribedCount])
     }
@@ -71,36 +68,29 @@ class AdminController {
 
         def allResourcesByUser
         if(params.search==null){
-            allResourcesByUser = ReadingItem.createCriteria().list() {
-                and {
-                    eq("isRead", false)
-                    eq("user", user)
-                }
-            }
+            allResourcesByUser = readingItemService.readingItemOfUser(user)
         }
         else{
             allResourcesByUser = searchService.searchWithParamsPostView(params.search,user)
         }
 
-        def allTopicsCreatedByUser = Topic.createCriteria().list(){
-            eq("createdBy" , user)
-        }
-        def allTopics = Topic.createCriteria().list{}
+        List allTopicsCreatedByUser = topicService.topicCreatedByUser(user)
+        def allTopics = Topic.findAll()
 
-        def topicMap = dashboardService.createTopicMap(allTopics)
+        Map topicMap = dashboardService.createTopicMap(allTopics)
         boolean isAdmin = user.admin
-        def subscriptionList = subscriptionService.topicSubscribedByUser(user)
-        def topicCount = Topic.createCriteria().count{
+        List subscriptionList = subscriptionService.topicSubscribedByUser(user)
+        int topicCount = Topic.createCriteria().count{
             eq("createdBy" , user)
         }
-        def subscriptionListName = subscriptionList.collect { subs-> subs.topic.name}
-        def topicCreatedByUserName = allTopicsCreatedByUser.collect{topic-> topic.name}
-        def subscribedCount = subscriptionList.size()
+        List subscriptionListId = subscriptionList.collect { subs-> subs.topic.id }
+        List topicCreatedByUserId = allTopicsCreatedByUser.collect{topic-> topic.id}
+        int subscribedCount = subscriptionList.size()
         render(view: "profile" , model : [isAdmin : isAdmin , subscriptionList : subscriptionList,
         topicCount : topicCount , user : user , topicsCreatedByUserList: allTopicsCreatedByUser,
         allResourcesByUser : allResourcesByUser ,  subscribedCount : subscribedCount,
-        topicMap : topicMap, subscriptionListName : subscriptionListName
-          ,allTopics: allTopics, topicCreatedByUserName : topicCreatedByUserName])
+        topicMap : topicMap, subscriptionListId : subscriptionListId
+          ,allTopics: allTopics, topicCreatedByUserId : topicCreatedByUserId])
     }
 
     def usersView() {
@@ -108,11 +98,10 @@ class AdminController {
             redirect(url :"/")
             return
         }
-
         User user = User.findByUsername(session.username);
         boolean isAdmin = user.admin
-        def subscriptionList = subscriptionService.topicSubscribedByUser(user)
-        def allUsers = User.findAll()
+        List subscriptionList = subscriptionService.topicSubscribedByUser(user)
+        List allUsers = User.findAll()
         render(view: "users" , model : [subscriptionList: subscriptionList, allUsers : allUsers , isAdmin : isAdmin ,user : user ])
     }
 
@@ -121,11 +110,9 @@ class AdminController {
             redirect(url :"/")
             return
         }
-
-        def allTopics = Topic.createCriteria().list(){}
+        List allTopics = Topic.findAll()
         User user = User.findByUsername(session.username);
-        def subscriptionList = subscriptionService.topicSubscribedByUser(user)
-
+        List subscriptionList = subscriptionService.topicSubscribedByUser(user)
         boolean isAdmin = user.admin
         render(view: "topics", model : [ subscriptionList: subscriptionList,isAdmin : isAdmin , allTopics : allTopics ,user : user])
     }
@@ -136,9 +123,9 @@ class AdminController {
             return
         }
 
-        def allResource = Resource.createCriteria().list(){}
+        List allResource = Resource.findAll()
         User user = User.findByUsername(session.username);
-        def subscriptionList = subscriptionService.topicSubscribedByUser(user)
+        List subscriptionList = subscriptionService.topicSubscribedByUser(user)
         boolean isAdmin = user.admin
         render(view:"posts", model : [subscriptionList: subscriptionList,isAdmin : isAdmin , allResource : allResource,user : user])
     }

@@ -3,7 +3,7 @@ package helloworld
 class LinkResourceService {
 
 
-    def saveLinkUsingCredentials(def params , User currUser){
+    boolean saveLinkUsingCredentials(def params , User currUser){
 
         if(params.linkdes.length()>=128){
             return false

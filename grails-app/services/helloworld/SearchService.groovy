@@ -6,7 +6,7 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class SearchService {
 
-    def searchWithParams(String search) {
+    List searchWithParams(String search) {
         if (search.trim() == '') {
             return ReadingItem.createCriteria().list(){}
         }
@@ -25,7 +25,7 @@ class SearchService {
 
     }
 
-    def searchWithParamsPostView(String search,User user) {
+    List searchWithParamsPostView(String search,User user) {
         if (search.trim() == '') {
             return ReadingItem.createCriteria().list(){
                 and{
@@ -53,7 +53,7 @@ class SearchService {
 
     }
 
-    def searchWithParamsTopicView(String search,User user) {
+    List searchWithParamsTopicView(String search,User user) {
         if (search.trim() == '') {
             return Topic.createCriteria().list(){
                 eq("createdBy" , user)
@@ -71,8 +71,8 @@ class SearchService {
 
     }
 
-    def searchRecentListWithoutLogin(String search){
-        def topPost = Resource.createCriteria().list(){
+    List searchRecentListWithoutLogin(String search){
+        List topPost = Resource.createCriteria().list(){
             or {
                 topic {
                     eq("visibility" , Visibility.PUBLIC)
@@ -86,7 +86,7 @@ class SearchService {
         return topPost
     }
 
-    def searchtopRatingPostWihoutLogin(String search){
+    List searchtopRatingPostWihoutLogin(String search){
         def topRatingPost = ResourceRating.createCriteria().list(){
             order("score","desc")
             resource{

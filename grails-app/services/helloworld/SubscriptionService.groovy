@@ -18,13 +18,13 @@ class SubscriptionService {
 
         HashMap<String, Date> temp = new LinkedHashMap<String, Date>();
         Collections.reverse(list)
-        for (Map.Entry<String, Date> aa : list) {
-            temp.put(aa.getKey(), aa.getValue());
+        for (Map.Entry<String, Date> entry : list) {
+            temp.put(entry.getKey(), entry.getValue());
         }
         return temp;
     }
 
-    def topicSubscribedByUser(User currUser){
+    List topicSubscribedByUser(User currUser){
 
         List tempSubList = Subscription.createCriteria().list{
             eq("user",currUser)

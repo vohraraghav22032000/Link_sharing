@@ -19,7 +19,7 @@ class RegisterController {
         }
         else{
             session.username = params.username
-            def flag = registerService.updateProfileUsingCredentials(params , user)
+            boolean flag = registerService.updateProfileUsingCredentials(params , user)
             if(flag) {
                 flash.successMessage = "Profile updated Successfully"
                 redirect(url : "/admin/editProfileView", model :['msg' : flash.successMessage ])
@@ -34,7 +34,7 @@ class RegisterController {
     def updatePassword(){
 
         User user = User.findByUsername(session.username);
-        def flag = registerService.updatePasswordUsingCredentials(params , user)
+        boolean flag = registerService.updatePasswordUsingCredentials(params , user)
         if(flag) {
             flash.successMessage = "Password updated Successfully"
             redirect(url : "/admin/editProfileView", model :['msg' : flash.successMessage ])
@@ -75,17 +75,17 @@ class RegisterController {
         User user = User.findByEmail(params.email)
         if(!user){
             flash.errorMessage = "Please enter valid email"
-            redirect(url : "/index/resetPasswordUsingLink", model :['msg' : flash.errorMessage ])
+            redirect(url : "/authentication/resetPasswordUsingLink", model :['msg' : flash.errorMessage ])
         }
         else if(params.password != params.confirmpassword){
             flash.errorMessage = "Password and confirm password not matching"
-            redirect(url : "/index/resetPasswordUsingLink", model :['msg' : flash.errorMessage ])
+            redirect(url : "/authentication/resetPasswordUsingLink", model :['msg' : flash.errorMessage ])
         }
         else{
             user.password  = params.password
             user.save(flush:true , failOnError:true)
             flash.successMessage = "Your password updated successfully , You can close this page"
-            redirect(url : "/index/resetPasswordUsingLink", model :['msg' : flash.successMessage ])
+            redirect(url : "/authentication/resetPasswordUsingLink", model :['msg' : flash.successMessage ])
         }
     }
 

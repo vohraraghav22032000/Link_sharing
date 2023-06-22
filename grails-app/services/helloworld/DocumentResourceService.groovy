@@ -1,5 +1,6 @@
 package helloworld
 
+import Enum.Visibility
 import org.apache.tomcat.util.http.fileupload.FileUploadBase
 
 //import org.springframework.web.multipart.MultipartFile
@@ -14,7 +15,7 @@ class DocumentResourceService {
         return Math.round(Math.random() * 1e6)
     }
 
-    def saveDocumentUsingCredentials(def params , User currUser){
+    boolean saveDocumentUsingCredentials(def params , User currUser){
         if(params.docdes.length()>=128){
             return false
         }
@@ -59,7 +60,6 @@ class DocumentResourceService {
                 readingItem.resource = docres
                 readingItem.isRead = false
                 readingItem.validate()
-                "reading item for all user subscribed successfully"
                 readingItem.save(flush:true , failOnError : true)
             }
         }
@@ -69,7 +69,36 @@ class DocumentResourceService {
         return true
     }
 
-    def deletePost(){
+    List getTopRatingPost(String timeFrame){
+        List topRatingPost = ResourceRating.createCriteria().list {
+            Calendar calendar = Calendar.getInstance()
+            def startDate
+            switch (timeFrame){
+                case "Today" : startDate = calendar.clearTime()
+                    break
+                case "1 Week" : calendar.add(Calendar.DAY_OF_MONTH,-7)
+                    startDate = calendar.clearTime()
+                    break
+                case "1 Month" : calendar.add(Calendar.MONTH , -1)
+                    startDate = calendar.clearTime()
+                    break
+                case "1 Year" : calendar.add(Calendar.YEAR , -1)
+                    startDate = calendar.clearTime()
+                    break
+                default:
+                    startDate = calendar.clearTime()
+            }
+            resource{
+                topic {
+                    eq("visibility", Visibility.PUBLIC)
+                }
+                ge("dateCreated" , startDate.time)
+                order("lastUpdated","desc")
+            }
+            order("score", "desc")
+            maxResults(5)
+        }
 
+        return topRatingPost
     }
 }

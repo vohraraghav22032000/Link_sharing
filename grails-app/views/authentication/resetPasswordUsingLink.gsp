@@ -1,6 +1,11 @@
 <%--
   Created by IntelliJ IDEA.
   User: raghavvohra
+  Date: 21/06/23
+  Time: 2:43 PM
+--%><%--
+  Created by IntelliJ IDEA.
+  User: raghavvohra
   Date: 16/06/23
   Time: 6:14 PM
 --%>
@@ -26,52 +31,7 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
 
-    <style>
-    #success-message {
-        z-index: 9999;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        background-color: darkgrey;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .toast-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 10px;
-    }
-
-    .btn-close {
-        color: white;
-        opacity: 0.5;
-    }
-
-    .btn-close:hover {
-        opacity: 1;
-    }
-    #error-message {
-        z-index: 9999;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        background-color: red !important;
-        color: black;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'flashMessage.css')}">
 
 </head>
 
@@ -92,7 +52,7 @@
 
     <div id="error-message" class="toast show position-fixed top-0 start-50 translate-middle-x" style="z-index: 9999; background-color: darkgrey;">
         <div class="toast-header" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-            <strong class="me-auto">${flash.errorMessage}this is error message</strong>
+            <strong class="me-auto">${flash.errorMessage}</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
         </div>
     </div>

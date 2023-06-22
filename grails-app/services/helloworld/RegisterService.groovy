@@ -25,14 +25,14 @@ class RegisterService {
     MailSender mailSender
     LinkGenerator grailsLinkGenerator
 
-    def registerUserUsingCredentials(def params , def countFlag){
-        User u = new User();
-        u.username = params.username
-        u.email = params.email
+    boolean registerUserUsingCredentials(def params , def countFlag){
+        User user = new User();
+        user.username = params.username
+        user.email = params.email
 
-        u.lastname = params.lastname
-        u.firstname= params.firstname
-        u.password = params.password
+        user.lastname = params.lastname
+        user.firstname= params.firstname
+        user.password = params.password
 
         if(params.firstname.length()>=30 || params.password!=params.confirmpassword
             || params.lastname.length()>=30 ){
@@ -47,18 +47,18 @@ class RegisterService {
             newFile.createNewFile()
             newFile.append(bytes)
             params.photo  = url
-            u.photo = params.photo
+            user.photo = params.photo
         }
 
         catch(Exception e){
             println e
-            u.photo = "grails-app/assets/images/defaultImage.png"
+            user.photo = "grails-app/assets/images/defaultImage.png"
         }
-        if(u.validate() && params.password == params.confirmpassword){
+        if(user.validate() && params.password == params.confirmpassword){
             if(countFlag==true){
-                u.admin = true
+                user.admin = true
             }
-            u.save(flush : true , failOnError : true)
+            user.save(flush : true , failOnError : true)
             return true
         }
         else{
@@ -66,7 +66,7 @@ class RegisterService {
         }
     }
 
-    def updateProfileUsingCredentials(def params , User currUser){
+    boolean updateProfileUsingCredentials(def params , User currUser){
         currUser.firstname = params.firstname
         currUser.lastname = params.lastname
         currUser.username = params.username
@@ -99,25 +99,24 @@ class RegisterService {
 
     }
 
-    def updatePasswordUsingCredentials(def params , User currUser){
+    boolean updatePasswordUsingCredentials(def params , User currUser){
         if(params.password == params.confirmpassword){
             currUser.password  = params.password
             currUser.save(flush:true , failOnError:true)
-            println "password updated"
             return true
         }
         return false
 
     }
 
-    def resetPassword(def params, User user){
+    boolean resetPassword(def params){
         try{
             String subject = "Regarding your new password"
 
             def msg = new SimpleMailMessage();
             msg.setFrom("vohraraghav@outlook.com")
 
-            def resetPasswordUrl = "http://localhost:9090/index/resetPasswordUsingLink"
+            def resetPasswordUrl = "http://localhost:9090/authentication/resetPasswordUsingLink"
 
             String mailText = "Click the following link to reset your password: ${resetPasswordUrl}"
             msg.setTo(params.userEmail)

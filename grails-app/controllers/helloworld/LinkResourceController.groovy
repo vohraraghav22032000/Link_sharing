@@ -5,7 +5,7 @@ class LinkResourceController {
     def linkResourceService
     def index() {
         if(session.username==null){
-            redirect(url :"/index")
+            redirect(url :"/authentication")
             return
         }
     }

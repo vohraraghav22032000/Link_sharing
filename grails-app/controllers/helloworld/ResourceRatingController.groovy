@@ -1,5 +1,11 @@
 package helloworld
 
+import org.apache.tomcat.util.http.fileupload.FileUploadBase
+
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.commons.CommonsMultipartResolver
+import org.springframework.web.multipart.MultipartException
+
 class ResourceRatingController {
 
     def index() {
@@ -10,7 +16,7 @@ class ResourceRatingController {
     }
 
     def rateResource(){
-        def resource = Resource.get(Integer.parseInt(params.resourceId))
+        Resource resource = Resource.get(Integer.parseInt(params.resourceId))
         Integer currScore = Integer.parseInt(params.score)
         User user = User.findByUsername(session.username)
         ResourceRating resourceRating1 = ResourceRating.findByUserAndResource(user,resource);
@@ -31,7 +37,7 @@ class ResourceRatingController {
     }
 
     def updateLinkResource(){
-        def resource = Resource.findById(params.resourceId)
+        Resource resource = Resource.findById(params.resourceId)
         if(resource){
             resource.url = params.doclink
             resource.description = params.docdes
@@ -45,11 +51,26 @@ class ResourceRatingController {
             redirect(url : "/dashboard", model :['msg' : flash.errorMessage ])
         }
     }
+    int generateRandomNumber(){
+        return Math.round(Math.random() * 1e6)
+    }
 
     def updateDocumentResource(){
-        def resource = Resource.findById(params.resourceId)
+        Resource resource = Resource.findById(params.resourceId)
         if(resource){
-            resource.filePath = params.docpath
+//            resource.filePath = params.docpath
+            def multipartFile = params.docpath
+            def fileExtension = multipartFile.getOriginalFilename().tokenize('.')[-1]
+
+            def bytes = multipartFile.getBytes()
+            int num = generateRandomNumber()
+            def url = "grails-app/assets/documents/${num}.${fileExtension}"
+            def newFile = new File("${url}")
+
+            newFile.createNewFile()
+            newFile.append(bytes)
+
+            resource.filePath = "/assets/${num}.${fileExtension}"
             resource.description = params.docdes
             resource.save(flush:true , failOnError : true)
             flash.successMessage = "Document resources are updated successfully"
@@ -62,10 +83,7 @@ class ResourceRatingController {
     }
 
     def deleteResource(){
-        def resource = Resource.findById(params.resourceId)
-        if(resource){
-            println "resource found to delete in delete resource" + resource
-        }
+        Resource resource = Resource.findById(params.resourceId)
         if(resource){
             resource.delete(flush:true , failOnError : true)
             flash.successMessage = "Resource deleted successfully"

@@ -66,9 +66,9 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-4">
-                                        <g:if test="${!topicCreatedByUserName.contains(item.topic.name)}">
+                                        <g:if test="${!topicCreatedByUserId.contains(item.topic.id)}">
                                             <g:if test="${topicMap.get(item.topic).topicCreatedBy.username!=session.username}">
-                                                <g:if test="${subscriptionListName.contains(item.topic.name)}">
+                                                <g:if test="${subscriptionListId.contains(item.topic.id)}">
                                                     <button id = "${item.topic.id}" class="unsubscribeBtn2 btn btn-dark">Unsubscribe</button>
                                                 </g:if>
 
@@ -89,7 +89,7 @@
                                       noSelection="${['':item.seriousness]}" />
                         </div>
 
-                        <g:if test="${isAdmin || topicCreatedByUserName.contains(item.topic.name)}">
+                        <g:if test="${isAdmin || topicCreatedByUserId.contains(item.topic.id)}">
                             <div>
                                 <g:select name="${item.topic.id}" id="${item.topic.id}" class="updateVisibility" from="${['PUBLIC','PRIVATE'] -
                                         ["${item.topic.visibility}"]}" value="${item.topic.visibility}"
@@ -121,7 +121,6 @@
                                                         <g:each in="${subscriptionList}" var="curr">
                                                             <option value="${curr.topic.name}">${curr.topic.name}</option>
                                                         </g:each>
-
                                                     </select>
                                                 </div>
 
@@ -135,11 +134,11 @@
                                 </div>
                             </div>
                         </div>
-                        <g:if test="${isAdmin || topicCreatedByUserName.contains(item.topic.name)}">
+                        <g:if test="${isAdmin || topicCreatedByUserId.contains(item.topic.id)}">
                             <button id="${item.topic.id}" class="edit-button btn btn-success"><i class="bi bi-pencil-square"></i></button>
                         </g:if>
 
-                        <g:if test="${isAdmin || topicCreatedByUserName.contains(item.topic.name)}">
+                        <g:if test="${isAdmin || topicCreatedByUserId.contains(item.topic.id)}">
                             <button id = "${item.topic.id}" class="deleteBtn btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
                         </g:if>
                     </div>

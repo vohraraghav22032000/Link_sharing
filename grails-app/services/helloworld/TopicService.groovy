@@ -14,7 +14,7 @@ class TopicService {
 
     MailSender mailSender
 
-    def saveTopicUsingCredentials(def params , User currUser) {
+    boolean saveTopicUsingCredentials(def params , User currUser) {
         if(params.topicName.length()>=128){
             return false
         }
@@ -47,7 +47,7 @@ class TopicService {
         subs.save(flush : true , failOnError : true)
     }
 
-    def getTopRecentPosts() {
+    List getTopRecentPosts() {
         def topPost = Resource.createCriteria().list(){
             topic{
                 eq("visibility" , Visibility.PUBLIC)
@@ -58,7 +58,7 @@ class TopicService {
         return topPost
     }
 
-    def getTrendingPosts(User currUser){
+    List getTrendingPosts(User currUser){
         def trendingList = Resource.createCriteria().list(){
             projections {
                 groupProperty("topic")
@@ -73,7 +73,7 @@ class TopicService {
         return trendingList
     }
 
-    def sendInvite(def params){
+    boolean sendInvite(def params){
         try{
             String subject = "Invitation for the topic"
             String  mailtext = "This is invite for the topic--->" + params.linkTopic
@@ -89,5 +89,9 @@ class TopicService {
             println e
             return false
         }
+    }
+
+    List topicCreatedByUser(User currUser){
+        return Topic.createCriteria().list(){eq("createdBy",currUser)}
     }
 }

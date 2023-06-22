@@ -8,15 +8,15 @@ class TopicController {
 
     def index() {
         if(session.username==null){
-            redirect(url :"/index")
+            redirect(url :"/authentication")
             return
         }
     }
 
     def saveTopic(){
         User user = User.findByUsername(session.username);
-        def topicCreatedByUser = Topic.createCriteria().list(){eq("createdBy",user)}
-        def topicCreatedByUserName = topicCreatedByUser.collect { topic -> topic.name}
+        List topicCreatedByUser = Topic.createCriteria().list(){eq("createdBy",user)}
+        List topicCreatedByUserName = topicCreatedByUser.collect { topic -> topic.name}
 
         if(topicCreatedByUserName.contains(params.topicName)){
             flash.errorMessage= "This topic has already been created By You"
@@ -37,7 +37,7 @@ class TopicController {
     }
 
     def updateVisibility(){
-        def topic = Topic.get(params.topicId)
+        Topic topic = Topic.get(params.topicId)
         if (topic) {
             if(params.selectedOption=='PRIVATE'){
                 topic.visibility = Visibility.PRIVATE
@@ -54,7 +54,7 @@ class TopicController {
     }
 
     def deleteTopic(){
-        def topic = Topic.get(params.topicId)
+        Topic topic = Topic.get(params.topicId)
         if (topic) {
             topic.delete(flush: true)
             render(status: 200, text: 'Topic deleted')
@@ -65,9 +65,8 @@ class TopicController {
     }
 
     def updateTopicName(){
-        def topic = Topic.get(params.topicId)
+        Topic topic = Topic.get(params.topicId)
         if (params.newTopicName.length()<128 && params.newTopicName.trim() != '') {
-            println "topic found successfully"
             topic.name = params.newTopicName
             topic.save(flush: true , failOnError:true)
             render(status: 200, text: 'Topic name updated Successfully')
@@ -79,7 +78,7 @@ class TopicController {
 
 
     def sendInvitation(){
-        def flag = topicService.sendInvite(params)
+        boolean flag = topicService.sendInvite(params)
         if(flag){
             flash.successMessage = "invitation sent successfully"
             redirect(url : "/dashboard", model :['msg' : flash.successMessage ])

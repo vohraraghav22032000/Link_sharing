@@ -1,0 +1,49 @@
+
+#success-message {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background-color: darkgrey;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.toast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+.btn-close {
+    color: white;
+    opacity: 0.5;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+#error-message {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background-color: red !important;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btnread{
+    border-radius: 20px;
+    background: lightblue;
+}
+

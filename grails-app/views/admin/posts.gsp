@@ -12,57 +12,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
-     <style>
-    #success-message {
-        z-index: 9999;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        background-color: darkgrey;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .toast-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 10px;
-    }
-
-    .btn-close {
-        color: white;
-        opacity: 0.5;
-    }
-
-    .btn-close:hover {
-        opacity: 1;
-    }
-
-    #usersTable{
-        border: 2px solid black;
-        border-collapse: separate !important;
-        border-radius: 20px ;
-    }
-    #error-message {
-        z-index: 9999;
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 300px;
-        background-color: red !important;
-        color: black;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-     </style>
+    <link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'flashMessage.css')}">
 </head>
     <body>
     <%
@@ -73,7 +23,7 @@
         response.setHeader("Cache-Control", "private, no-store, max-age=0, no-cache, must-revalidate");
 
         if(session==null)
-            response.sendRedirect(url : "/index");
+            response.sendRedirect(url : "/authentication");
     %>
     <g:if test="${flash.successMessage}">
 

@@ -11,7 +11,7 @@ class SearchController {
 
     def index() {
         if(session.username == null){
-            redirect(url :"/index")
+            redirect(url :"/authentication")
             return
         }
         if(params.search.length()>128){
@@ -23,18 +23,18 @@ class SearchController {
             flash.errorMessage = "please enter some text"
             redirect(url : "/dashboard", model :['msg' : flash.errorMessage])
         }
-        def allTopics = Topic.createCriteria().list {}
+        List allTopics = Topic.findAll()
         allTopics = allTopics.sort { a, b -> a.name <=> b.name }
-        def topicMap = dashboardService.createTopicMap(allTopics)
-        def trendingList = topicService.getTrendingPosts(user)
-        def subscriptionList = subscriptionService.topicSubscribedByUser(user)
-        def isAdmin = user.admin
-        def subscriptionListName = subscriptionList.collect { subs-> subs.topic.name}
-        def recentList = topicService.getTopRecentPosts()
-        def allPosts = ReadingItem.createCriteria().list(){
+        Map topicMap = dashboardService.createTopicMap(allTopics)
+        List trendingList = topicService.getTrendingPosts(user)
+        List subscriptionList = subscriptionService.topicSubscribedByUser(user)
+        boolean isAdmin = user.admin
+        List subscriptionListId = subscriptionList.collect { subs-> subs.topic.id}
+        List recentList = topicService.getTopRecentPosts()
+        List allPosts = ReadingItem.createCriteria().list(){
             eq("isRead" , false)
         }
-        def topRatingPost = ResourceRating.createCriteria().list(){
+        List topRatingPost = ResourceRating.createCriteria().list(){
             order("score","desc")
             resource{
                 topic{
@@ -44,22 +44,22 @@ class SearchController {
             maxResults 5
         }
 
-        def searchOutput = searchService.searchWithParams(params.search)
+        List searchOutput = searchService.searchWithParams(params.search)
 
         render (view: "index",model: [recentList : recentList , trendingList : trendingList,
          subscriptionList : subscriptionList , isAdmin : isAdmin , user : user ,allPosts : allPosts,
         allTopics : allTopics , topicMap : topicMap ,  searchOutput : searchOutput,
-               topRatingPost : topRatingPost,subscriptionListName : subscriptionListName])
+               topRatingPost : topRatingPost,subscriptionListId : subscriptionListId])
 
     }
 
     def withoutLogin(){
         if(params.search.length()>128){
             flash.errorMessage = "search content should not exceed 128 characters"
-            redirect(url : "/index", model :['msg' : flash.errorMessage ])
+            redirect(url : "/authentication", model :['msg' : flash.errorMessage ])
         }
-        def recentList = searchService.searchRecentListWithoutLogin(params.search)
-        def topRatingPost = searchService.searchtopRatingPostWihoutLogin(params.search)
+        List recentList = searchService.searchRecentListWithoutLogin(params.search)
+        List topRatingPost = searchService.searchtopRatingPostWihoutLogin(params.search)
         render(view : "withoutLogin",model:[recentList: recentList , topRatingPost: topRatingPost])
     }
 }

@@ -10,19 +10,19 @@ class SubscriptionController {
 
     def index() {
         if(session.username==null){
-            redirect(url :"/index")
+            redirect(url :"/authentication")
             return
         }
     }
 
     def topicSubscribedByUser(){
         User user = User.findByUsername(session.username);
-        def result = subscriptionService.topicSubscribedByUser(user)
+        List result = subscriptionService.topicSubscribedByUser(user)
         render result
     }
 
     def addSubscription(){
-        def topic = Topic.get(params.topicId)
+        Topic topic = Topic.get(params.topicId)
         if (topic) {
             User user = User.findByUsername(session.username);
             topicService.subscribedToTopic(topic,user)
@@ -33,7 +33,7 @@ class SubscriptionController {
     }
 
     def deleteSubscription(){
-        def topic = Topic.get(params.topicId)
+        Topic topic = Topic.get(params.topicId)
         if (topic) {
             User user = User.findByUsername(session.username);
             def deletedValue = Subscription.findByTopicAndUser(topic,user)
@@ -45,7 +45,7 @@ class SubscriptionController {
     }
 
     def updateSeriousness(){
-        def subscription = Subscription.get(params.subscriptionId)
+        Subscription subscription = Subscription.get(params.subscriptionId)
         if (subscription) {
             if(params.selectedOption=='VERY_SERIOUS'){
                 subscription.seriousness = Seriousness.VERY_SERIOUS
